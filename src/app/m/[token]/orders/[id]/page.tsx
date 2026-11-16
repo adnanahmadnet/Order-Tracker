@@ -229,7 +229,6 @@ export default async function MasterOrder({
               <StageTrack steps={itemTrack(item.id)} />
             </summary>
             <div className="mt-4 space-y-3">
-              <DesignPictures token={token} itemId={item.id} fieldKeys={designFieldKeys(item.snapshot.fields)} />
               <MasterItemFields
                 token={token}
                 orderId={order.id}
@@ -247,6 +246,8 @@ export default async function MasterOrder({
                 turn={order.canComplete}
                 confirmed={!!order.confirmedAt}
               />
+              {/* reference pictures go last, after the form and the steps */}
+              <DesignPictures token={token} itemId={item.id} fieldKeys={designFieldKeys(item.snapshot.fields)} />
             </div>
           </details>
           {order.status === "active" && readyItems.has(item.id) && (

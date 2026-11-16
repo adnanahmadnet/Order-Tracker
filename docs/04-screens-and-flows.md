@@ -74,6 +74,7 @@ Open the personal link, enter the personal code (one large input; numbers and le
 - Admin can configure which items share a page (for example Pagri + Shoes), to save printing cost.
 - Measurements and attached pictures **auto-resize** to fit one page.
 - Print-friendly black and white layout.
+- **Print** prints the same PDF as Download PDF (16 Nov 2026), so the paper looks the same on every phone: on a computer the print window opens, on a phone or tablet the PDF opens to print from there (iPhone: Share > Print).
 - **Download / share PDF** button. Masters often print at an internet cafe or print shop, so they need a PDF file they can send on WhatsApp, not only the phone's print dialog.
 
 ## Key flows
@@ -152,7 +153,7 @@ The Masters page shows each master as a card: name and status, progress (items, 
 
 ## Design Category (13 Nov 2026)
 - Sidebar: Design Category, after Masters. The page has an "Add a design" form (design number, notes, pictures) and a grid of design cards; a card opens its edit page (change the number or notes, add or remove pictures, hide from the customer form).
-- Customer form: the item's **Design number** box is a dropdown of these design numbers, with the chosen design's pictures shown small under it. Press Save and the pictures are copied onto the item. The master sees them as "The design the customer chose"; print and PDF include them.
+- Customer form: the item's **Design number** box is a dropdown of these design numbers, with the chosen design's pictures shown small under it. Press Save and the pictures are copied onto the item. The master sees them under "Reference pictures" at the end of the item (after the form and the steps); print and PDF include them.
 
 - Customers list (13 Nov 2026): the small "Steps N of M" progress card on each customer card was removed by request; the "Fields" card and everything else stay. The master home cards still show "Steps N of M" as a pill.
 

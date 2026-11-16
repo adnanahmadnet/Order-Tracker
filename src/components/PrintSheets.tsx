@@ -102,15 +102,26 @@ export function PrintSheets({ data, imgUrl }: { data: PrintData; imgUrl: (photoI
       </div>
     ) : null;
 
-  const itemBlock = (sheet: Sheet, item: SheetItem, key: string) => {
+  /**
+   * One item as several table rows, not one big block: Safari (iPhone, iPad) cannot split a table row over two pages and
+   * cuts off what does not fit, so every loose field, every heading with its section, the pictures and the karigar paper
+   * are each their own row and the page can break between them.
+   */
+  const itemRows = (sheet: Sheet, item: SheetItem, key: string) => {
     const h = photoHeightMm(sheet);
-    return (
-      <div key={key} className="mb-6" style={{ breakInside: "avoid" }}>
-        {(sheet.items.length > 1 || item.label !== sheet.title) && <h3 className="mb-1 max-w-none border-b-2 border-black pb-1 text-xl font-medium">{item.label}</h3>}
-        {/* everything under a heading (the heading, its rows, its measurements table) is kept on one page when it fits */}
-        {groupUnderHeadings(layoutDetails(item.details, item.measures)).map((g, n) => (
-          <div key={`g${n}`} style={g.headed ? { breakInside: "avoid" } : undefined}>
-            {g.items.map(({ b, i }) =>
+    const rows: React.ReactNode[] = [];
+    const row = (k: string, node: React.ReactNode, keep = false) =>
+      rows.push(
+        <tr key={`${key}-${k}`} style={keep ? { breakInside: "avoid" } : undefined}>
+          <td className="p-0 align-top">{node}</td>
+        </tr>,
+      );
+    if (sheet.items.length > 1 || item.label !== sheet.title)
+      row("title", <h3 className="mb-1 max-w-none border-b-2 border-black pb-1 text-xl font-medium" style={{ breakAfter: "avoid" }}>{item.label}</h3>, true);
+    // everything under a heading (the heading, its rows, its measurements table) is kept on one page when it fits;
+    // the fields before the first heading are a row each
+    groupUnderHeadings(layoutDetails(item.details, item.measures)).forEach((g, n) => {
+      const parts = g.items.map(({ b, i }) =>
           b.type === "heading" ? (
             <p key={i} className="mb-1 mt-5 border-b-2 border-black pb-0.5 text-sm font-medium uppercase tracking-wider" style={{ breakAfter: "avoid" }}>
               {b.label}
@@ -152,38 +163,48 @@ export function PrintSheets({ data, imgUrl }: { data: PrintData; imgUrl: (photoI
               {b.photoIds.length > 0 && pics(b.photoIds, FIELD_PHOTO_MM)}
             </div>
           ),
-            )}
+      );
+      if (g.headed) row(`g${n}`, <>{parts}</>, true);
+      else parts.forEach((p, k) => row(`g${n}-${k}`, p, true));
+    });
+    if (item.photoIds.length > 0)
+      row(
+        "pics",
+        <div className="mt-5">
+          <p className="border-b-2 border-black pb-0.5 text-sm font-medium uppercase tracking-wider" style={{ breakAfter: "avoid" }}>
+            Pictures
+          </p>
+          {(item.refPhotoIds?.length ?? 0) > 0 && pics(item.refPhotoIds!, REF_PHOTO_MM)}
+          {pics(item.photoIds.filter((id) => !item.refPhotoIds?.includes(id)), h)}
+        </div>,
+      );
+    // the tailor slip is not here: all slips are on the "Tailor slips" page at the end
+    if (item.karigar) {
+      const kp = item.karigar;
+      row(
+        "karigar",
+        <div className="mt-6">
+          <p className="border-t-2 border-dashed border-black pt-1 text-center text-[10px] uppercase tracking-widest">Cut here - karigar paper</p>
+          {/* the paper the master writes out by hand for the karigar: the name, then short names (underlined) with the value under each */}
+          <p className="mt-2 text-center text-lg font-medium">{kp.title}</p>
+          <div className="mt-3 space-y-5">
+            {kp.rows.map((cells, r) => (
+              <div key={r} className="flex">
+                {cells.map((c, k) => (
+                  <div key={`${c.label}-${k}`} className="px-1 text-center" style={{ width: `${100 / kp.cols}%` }}>
+                    <p className="text-base underline">{c.label}</p>
+                    <p className="text-xl leading-snug">{c.value}</p>
+                  </div>
+                ))}
+              </div>
+            ))}
           </div>
-        ))}
-        {item.photoIds.length > 0 && (
-          <div className="mt-5">
-            <p className="border-b-2 border-black pb-0.5 text-sm font-medium uppercase tracking-wider">Pictures</p>
-            {(item.refPhotoIds?.length ?? 0) > 0 && pics(item.refPhotoIds!, REF_PHOTO_MM)}
-            {pics(item.photoIds.filter((id) => !item.refPhotoIds?.includes(id)), h)}
-          </div>
-        )}
-        {/* the tailor slip is not here: all slips are on the "Tailor slips" page at the end */}
-        {item.karigar && (
-          <div className="mt-6" style={{ breakInside: "avoid" }}>
-            <p className="border-t-2 border-dashed border-black pt-1 text-center text-[10px] uppercase tracking-widest">Cut here - karigar paper</p>
-            {/* the paper the master writes out by hand for the karigar: the name, then short names (underlined) with the value under each */}
-            <p className="mt-2 text-center text-lg font-medium">{item.karigar.title}</p>
-            <div className="mt-3 space-y-5">
-              {item.karigar.rows.map((row, r) => (
-                <div key={r} className="flex">
-                  {row.map((c, k) => (
-                    <div key={`${c.label}-${k}`} className="px-1 text-center" style={{ width: `${100 / item.karigar!.cols}%` }}>
-                      <p className="text-base underline">{c.label}</p>
-                      <p className="text-xl leading-snug">{c.value}</p>
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    );
+        </div>,
+        true,
+      );
+    }
+    row("end", <div className="mb-6" />); // the space after an item
+    return rows;
   };
 
   return (
@@ -194,7 +215,8 @@ export function PrintSheets({ data, imgUrl }: { data: PrintData; imgUrl: (photoI
           className="border-2 border-black bg-white p-5 text-black print:border-0 print:p-0"
           style={n < pages.length - 1 ? { breakAfter: "page" } : undefined}
         >
-          {/* a table head is repeated by the browser at the top of every printed page (the PDF does the same with `fixed`) */}
+          {/* a table head is repeated at the top of every printed page by Chrome and Edge (the PDF does the same with
+              `fixed`); Safari does not repeat it, which is why the Print button prints the PDF */}
           <table className="w-full border-collapse">
             <thead>
               <tr>
@@ -202,19 +224,23 @@ export function PrintSheets({ data, imgUrl }: { data: PrintData; imgUrl: (photoI
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td className="p-0 align-top">
-                  {slips
-                    ? sheet.items.map((item, k) => tailorSlip(item, `slip-${k}`))
-                    : sheet.items.map((item, k) => itemBlock(sheet, item, `${item.label}-${k}`))}
-                  {!slips && data.notes && (
+              {slips
+                ? sheet.items.map((item, k) => (
+                    <tr key={`slip-${k}`} style={{ breakInside: "avoid" }}>
+                      <td className="p-0 align-top">{tailorSlip(item, `slip-${k}`)}</td>
+                    </tr>
+                  ))
+                : sheet.items.flatMap((item, k) => itemRows(sheet, item, `${item.label}-${k}`))}
+              {!slips && data.notes && (
+                <tr style={{ breakInside: "avoid" }}>
+                  <td className="p-0 align-top">
                     <div className="mt-4 border-t-2 border-black pt-2">
                       <p className="text-sm font-medium uppercase tracking-wider">Notes</p>
                       <p className="whitespace-pre-wrap">{data.notes}</p>
                     </div>
-                  )}
-                </td>
-              </tr>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </section>

@@ -51,3 +51,6 @@ next-env.d.ts
 # backups made by deploy/windows/backup.cjs, and the server log
 /backups
 /deploy/windows/server.log
+
+# browser tool page snapshots (may hold customer data)
+/.playwright-cli/

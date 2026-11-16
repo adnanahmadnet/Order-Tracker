@@ -1,7 +1,7 @@
 import { referencePhotos } from "@/lib/stages";
 
 /**
- * "The design the customer chose": the reference pictures of an item as small pictures. Tap one to open it full size.
+ * "Reference pictures": the reference pictures of an item as small pictures. Tap one to open it full size.
  */
 export function DesignPictures({ token, itemId, fieldKeys }: { token: string; itemId: number; fieldKeys: string[] }) {
   // pictures copied from a design of the library count as the design the customer chose, wherever the form has a picture field or not
@@ -12,7 +12,7 @@ export function DesignPictures({ token, itemId, fieldKeys }: { token: string; it
     <section className="space-y-2">
       <h3 className="flex items-center gap-2 text-xl font-medium">
         <span aria-hidden className="inline-block h-6 w-1.5 rounded-full bg-accent" />
-        The design the customer chose
+        Reference pictures
       </h3>
       <div className="grid grid-cols-3 gap-2">
         {pics.map((r) => (
@@ -22,10 +22,10 @@ export function DesignPictures({ token, itemId, fieldKeys }: { token: string; it
             target="_blank"
             rel="noreferrer"
             className="block aspect-square overflow-hidden rounded-2xl border border-rule bg-paper-3"
-            aria-label="Open the design picture full size"
+            aria-label="Open the reference picture full size"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={img(r.id, true)} alt="The design the customer chose" className="h-full w-full object-cover" />
+            <img src={img(r.id, true)} alt="Reference picture" className="h-full w-full object-cover" />
           </a>
         ))}
       </div>

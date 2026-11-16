@@ -79,7 +79,7 @@ These are the rules that come directly from the stakeholder (Anas) and are easy 
 52. Cancelling an order notifies the master, since they may already be working on it.
 
 ## Printing and sharing details
-53. Print output must also be available as a **downloadable / shareable PDF**, because masters print at an internet cafe or print shop.
+53. Print output must also be available as a **downloadable / shareable PDF**, because masters print at an internet cafe or print shop. The Print button prints that same PDF, so the printout is the same on every device (16 Nov 2026).
 54. The measurement view must be **screenshot-friendly** on a phone, so a master can send it to a karigar on WhatsApp.
 
 ## Remake (an item came back wrong)
