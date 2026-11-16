@@ -20,7 +20,7 @@ export default async function MasterPending({ params, searchParams }: { params: 
   return (
     <div className="space-y-5">
       <Link href={`/m/${token}`} className="link inline-flex min-h-12 items-center gap-2 text-lg font-medium">
-        <Icon name="arrow" className="h-4 w-4 rotate-180" /> Back
+        <Icon name="arrow" className="h-4 w-4 rotate-180 rtl:rotate-0" /> Back
       </Link>
       <PageTitle icon="clock" large>My pending work</PageTitle>
       {steps.length === 0 ? <p className="text-xl">Nothing is waiting for you.</p> : <PendingWork token={token} steps={steps} all />}

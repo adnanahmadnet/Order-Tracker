@@ -127,6 +127,13 @@
       "when": 1794597267907,
       "tag": "0017_luxuriant_magdalene",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "6",
+      "when": 1794852915013,
+      "tag": "0018_odd_steel_serpent",
+      "breakpoints": true
     }
   ]
 }

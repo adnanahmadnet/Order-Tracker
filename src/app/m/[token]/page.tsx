@@ -41,7 +41,7 @@ export default async function MasterHome({
       <header>
         <div className="flex items-center gap-3">
           <TitleIcon name="masters" large />
-          <h1 className="page-title text-4xl">Hello {master.name}</h1>
+          <h1 className="page-title text-4xl">Hello <bdi translate="no">{master.name}</bdi></h1>
         </div>
         <p className="text-lg">{active.length === 0 ? "No orders right now." : "Open an order to work on it. Any order can be done first."}</p>
       </header>
@@ -82,9 +82,9 @@ export default async function MasterHome({
                 <PositionTile n={i + 1} />
                 <Link href={`/m/${token}/orders/${o.id}`} className="group min-w-0 flex-1 after:absolute after:inset-0 after:content-['']" aria-label={`Open order ${o.orderNumber}, ${o.customerName}`}>
                   <p className="break-words text-xl font-medium leading-snug group-hover:underline">
-                    #{o.orderNumber} - {o.customerName}
+                    #{o.orderNumber} - <bdi translate="no">{o.customerName}</bdi>
                   </p>
-                  {o.designNumber && <p className="text-base font-medium text-accent-deep">Design: {o.designNumber}</p>}
+                  {o.designNumber && <p className="text-base font-medium text-accent-deep">Design: <bdi translate="no">{o.designNumber}</bdi></p>}
                   <p className="text-base text-muted">
                     {o.itemLabels.length > 0 ? o.itemLabels.join(", ") : "No items yet"}
                   </p>
@@ -100,7 +100,7 @@ export default async function MasterHome({
                 <span className="rounded-full bg-paper-3 px-3 py-1 font-medium">Due {fmtDay(o.karigarDueDate)}</span>
                 {o.progress.total > 0 && (
                   <span className="rounded-full bg-paper-3 px-3 py-1">
-                    Steps {o.progress.done} of {o.progress.total}
+                    {`Steps ${o.progress.done} of ${o.progress.total}`}
                   </span>
                 )}
               </div>

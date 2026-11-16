@@ -50,7 +50,7 @@ These are the rules that come directly from the stakeholder (Anas) and are easy 
 
 ## Shipping
 33. The master builds a **checklist** of items being dropped off and confirms each is physically present (to avoid missing-item shipments that cost about $100 to resend).
-34. The master **cannot submit** the shipment until the **bill is uploaded**.
+34. The bill photo is **optional** (changed 16 Nov 2026, client request; it was required before). The master can send the shipment without it, once the items are ticked as present. The packed-items photo is optional too.
 35. One bill covers all the finished items of all of a master's customers: they wait in the master's **cart**, he takes one bill photo and sends them together. He can take an item out of the shipment that day.
 36. Admin receives a copy of the bill.
 
@@ -125,3 +125,5 @@ These are the rules that come directly from the stakeholder (Anas) and are easy 
 80. The office chooses per item what the printed order carries at the bottom: the tailor slip, the karigar paper (short names in rows laid out by the office, filled in with the answers), both, or none. A change reaches customers in progress without telling the master, because only the printout changed. The slips never carry a date or price.
 
 81. The office chooses per field whether it is printed on the tailor slip (by default the fields under Measurements are). It can also add the design number, the item's colour and "1 of 2" (when an order has the same item twice) to the slip's header line. Pictures, notes and every date can never be put on the slip. These changes reach customers in progress without telling the master.
+
+82. Every master screen has an **English / اردو** button (16 Nov 2026). In Urdu the whole screen is Urdu, right to left, including what the office typed (translated once by a service and saved; English if there is no key). Customer names, design numbers and numbers are never translated, and the printed sheet and the PDF stay English. The choice is kept on that phone. The office side is English only.

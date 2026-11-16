@@ -62,7 +62,7 @@ export default async function MasterOrder({
   return (
     <div className="mx-auto w-full max-w-3xl space-y-4">
       <Link href={`/m/${token}`} className="link inline-flex min-h-12 items-center gap-2 text-lg font-medium">
-        <Icon name="arrow" className="h-4 w-4 rotate-180" /> Back
+        <Icon name="arrow" className="h-4 w-4 rotate-180 rtl:rotate-0" /> Back
       </Link>
       <section className="panel space-y-4">
         <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
@@ -87,21 +87,21 @@ export default async function MasterOrder({
         <dl className="space-y-1.5 border-t border-rule pt-4 text-xl">
           <div className="flex items-baseline justify-between gap-4">
             <dt className="text-muted">Customer</dt>
-            <dd className="text-right font-medium">
+            <dd className="text-end font-medium">
               <a href={ask} target="_blank" rel="noreferrer" className="link" title="Ask the office a question about this order">
-                {order.customerName}
+                <bdi translate="no">{order.customerName}</bdi>
               </a>
             </dd>
           </div>
           {design && (
             <div className="flex items-baseline justify-between gap-4">
               <dt className="text-muted">Design</dt>
-              <dd className="text-right font-medium">{design}</dd>
+              <dd className="text-end font-medium">{design}</dd>
             </div>
           )}
           <div className="flex items-baseline justify-between gap-4">
             <dt className="text-muted">Due date</dt>
-            <dd className="text-right font-medium">{fmtDay(order.karigarDueDate)}</dd>
+            <dd className="text-end font-medium">{fmtDay(order.karigarDueDate)}</dd>
           </div>
         </dl>
 
@@ -220,8 +220,13 @@ export default async function MasterOrder({
                     {remakeCount(item.id) > 0 && <span className="rounded-full bg-bad-soft px-3 py-0.5 text-sm font-medium text-bad">Remake</span>}
                   </h2>
                   <p className="text-base text-muted">
-                    {order.customerName}
-                    {order.designNumber ? ` - Design: ${order.designNumber}` : ""}
+                    <bdi translate="no">{order.customerName}</bdi>
+                    {order.designNumber ? (
+                      <span className="rtl:block">
+                        <span className="rtl:hidden"> - </span>
+                        Design: <bdi translate="no">{order.designNumber}</bdi>
+                      </span>
+                    ) : null}
                   </p>
                 </div>
                 <Icon name="chevron" className="h-6 w-6 shrink-0 text-muted transition-transform group-open:rotate-180" />
@@ -257,7 +262,7 @@ export default async function MasterOrder({
             >
               <Icon name="shipments" className="h-5 w-5 shrink-0" />
               <span className="flex-1">Finished. It is in your cart, ready to send.</span>
-              <Icon name="arrow" className="h-4 w-4 shrink-0" />
+              <Icon name="arrow" className="rtl-flip h-4 w-4 shrink-0" />
             </Link>
           )}
         </section>

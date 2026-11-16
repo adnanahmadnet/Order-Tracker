@@ -32,7 +32,7 @@ export function NotePictures({ orderId, saved = [], form, inline }: { orderId?: 
                     setGone((g) => [...g, p.id]);
                     await removeNotePictureAction(orderId, p.id);
                   }}
-                  className="absolute -right-2 -top-2 grid h-7 w-7 place-items-center rounded-full bg-ink text-white"
+                  className="absolute -end-2 -top-2 grid h-7 w-7 place-items-center rounded-full bg-ink text-white"
                 >
                   <Icon name="close" className="h-4 w-4" />
                 </button>

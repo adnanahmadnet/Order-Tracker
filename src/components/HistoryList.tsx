@@ -11,7 +11,7 @@ export function HistoryList({ lines, empty = "Nothing has happened yet." }: { li
           <div className="min-w-0">
             <p>
               <span className="font-medium">{describeEvent(h)}</span>
-              <span className="ml-2 text-sm text-muted">{h.at.toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" })}</span>
+              <span className="ms-2 text-sm text-muted">{h.at.toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" })}</span>
             </p>
             {h.text && (h.kind === "note" || h.kind === "instruction") && <p className="whitespace-pre-wrap break-words rounded-xl bg-paper-3 px-3 py-1.5 text-ink-2">{h.text}</p>}
           </div>

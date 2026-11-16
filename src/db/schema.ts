@@ -288,7 +288,7 @@ export const shipments = sqliteTable("shipments", {
     .notNull()
     .references(() => masters.id),
   status: text("status", { enum: SHIPMENT_STATUSES }).notNull().default("draft"),
-  billPhotoId: integer("bill_photo_id"), // required to submit
+  billPhotoId: integer("bill_photo_id"), // optional (was required to submit until 16 Nov 2026)
   packagePhotoId: integer("package_photo_id"), // optional photo of the packed items
   submittedAt: ts("submitted_at"),
   adminSeenAt: ts("admin_seen_at"), // null = Admin has not looked at it yet (drives the badge)
@@ -360,4 +360,14 @@ export const designPhotos = sqliteTable("design_photos", {
   fileKey: text("file_key").notNull(),
   thumbKey: text("thumb_key").notNull(),
   bytes: integer("bytes").notNull(),
+});
+
+// Urdu for text the office typed (item field names, notes, step names...), kept so each text is translated once.
+// The words that are fixed in the app are written by hand in src/lib/urdu.ts and are not stored here.
+export const translations = sqliteTable("translations", {
+  source: text("source").primaryKey(), // the English text, spaces tidied
+  ur: text("ur").notNull(),
+  createdAt: ts("created_at")
+    .notNull()
+    .$defaultFn(() => new Date()),
 });

@@ -11,7 +11,6 @@ export const dynamic = "force-dynamic";
 const ERRORS: Record<string, string> = {
   "no-items": "Choose the items you are sending.",
   "not-ready": "An item you chose is not approved for shipping yet. Wait for the office to approve its photo.",
-  "no-bill": "Take a photo of the bill first.",
   "already-shipped": "One of these items was already sent.",
   "not-draft": "This shipment was already sent.",
   blocked: "One of these orders is closed.",
@@ -36,14 +35,14 @@ export default async function Cart({ params, searchParams }: { params: Promise<{
   return (
     <div className="mx-auto w-full max-w-4xl space-y-5">
       <Link href={`/m/${token}`} className="link inline-flex min-h-12 items-center gap-2 text-lg font-medium">
-        <Icon name="arrow" className="h-4 w-4 rotate-180" /> Back
+        <Icon name="arrow" className="h-4 w-4 rotate-180 rtl:rotate-0" /> Back
       </Link>
       <header>
         <PageTitle icon="shipments" large>Cart</PageTitle>
         <p className="text-lg">
           {candidates.length === 0
             ? "Nothing is ready to send."
-            : `${candidates.length} finished item${candidates.length === 1 ? "" : "s"} from ${customers} customer${customers === 1 ? "" : "s"}. Take one photo of the bill and send them all together.`}
+            : `${candidates.length} finished item${candidates.length === 1 ? "" : "s"} from ${customers} customer${customers === 1 ? "" : "s"}. You can add one photo of the bill, then send them all together.`}
         </p>
       </header>
 

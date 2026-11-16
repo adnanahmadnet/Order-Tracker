@@ -21,7 +21,7 @@ export function LockedItems({ items }: { items: LockedChoice[] }) {
             {i.label}
           </div>
           <p className="text-base text-muted">Not ready to send yet:</p>
-          <ul className="list-disc space-y-0.5 pl-5 text-base">
+          <ul className="list-disc space-y-0.5 ps-5 text-base">
             {i.blockers.map((b) => (
               <li key={b}>{b}</li>
             ))}
@@ -94,7 +94,7 @@ export function ShipmentFlow({
 
   const hasItems = picked.length > 0;
   const hasBill = billPhotoId !== null;
-  const canSend = hasItems && hasBill && turnOk;
+  const canSend = hasItems && turnOk; // the bill photo is optional
   const photoUrl = (id: number) => `/api/m/${token}/photos/${id}`;
   const endpoint = `/api/m/${token}/orders/${orderId}/ship-photos`;
   const mark = (ok: boolean) => <Icon name={ok ? "check" : "alert"} className={`h-5 w-5 shrink-0 ${ok ? "text-leaf" : "text-muted"}`} />;
@@ -127,7 +127,7 @@ export function ShipmentFlow({
                       <span className="break-words text-xl font-medium">{i.label}</span>
                       <span className="rounded-full bg-ok-soft px-2.5 py-0.5 text-xs font-medium text-ok">Ready</span>
                     </span>
-                    {i.sub && <span className="block text-base font-medium text-ink-2">{i.sub}</span>}
+                    {i.sub && <span className="block text-base font-medium text-ink-2" translate="no">{i.sub}</span>}
                     <span className="mt-0.5 flex items-center gap-1.5 text-base text-muted">
                       <Icon name="check" className="h-4 w-4 text-ok" /> I checked it is here
                     </span>
@@ -149,7 +149,7 @@ export function ShipmentFlow({
         </section>
 
         <section className="space-y-3">
-          <StepTitle n={2} hint="One bill can be for many items.">
+          <StepTitle n={2} note="Optional" hint="One bill can be for many items.">
             Photo of the bill
           </StepTitle>
           {billPhotoId !== null ? (
@@ -170,7 +170,7 @@ export function ShipmentFlow({
               <PhotoUpload endpoint={endpoint} fields={{ kind: "bill" }} label="Take the bill photo again" camera quiet />
             </div>
           ) : (
-            <DropBox text="Take a clear photo of the bill.">
+            <DropBox text="You can skip this, or take a clear photo of the bill.">
               <PhotoUpload endpoint={endpoint} fields={{ kind: "bill" }} label="Take photo of bill" camera quiet />
             </DropBox>
           )}
@@ -227,7 +227,7 @@ export function ShipmentFlow({
                 <li key={i.id} className="flex items-center gap-3 rounded-xl bg-paper-3 px-3 py-2 text-lg">
                   <span className="min-w-0 flex-1 break-words font-medium">
                     {i.label}
-                    {i.sub && <span className="block text-sm font-normal text-muted">{i.sub}</span>}
+                    {i.sub && <span className="block text-sm font-normal text-muted" translate="no">{i.sub}</span>}
                   </span>
                   <button type="button" onClick={() => toggle(i.id)} className="btn btn-quiet h-auto min-h-9 px-3 py-1 text-sm" aria-label={`Take ${i.label} out of the shipment`}>
                     Remove
@@ -242,7 +242,7 @@ export function ShipmentFlow({
           <ul className="space-y-2 text-base">
             {[
               { ok: hasItems, text: hasItems ? `${picked.length} item${picked.length === 1 ? "" : "s"} chosen` : "Choose the items", tag: hasItems ? "Done" : "", on: true },
-              { ok: hasBill, text: hasBill ? "Bill photo added" : "Add the bill photo", tag: hasBill ? "Attached" : "", on: true },
+              { ok: hasBill, text: hasBill ? "Bill photo added" : "Bill photo", tag: hasBill ? "Attached" : "Optional", on: hasBill },
               { ok: packagePhotoId !== null, text: "Packed items photo", tag: packagePhotoId !== null ? "Attached" : "Optional", on: packagePhotoId !== null },
             ].map((r) => (
               <li key={r.text} className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 ${r.ok ? "border-ok/30 bg-ok-soft/40" : "border-rule-2"}`}>
@@ -262,7 +262,7 @@ export function ShipmentFlow({
           disabled={!canSend}
           className="btn h-auto min-h-14 w-full gap-2 rounded-xl border !border-ink !bg-ink px-5 py-3 text-lg !text-white disabled:!border-rule-2 disabled:!bg-paper-3 disabled:!text-muted"
         >
-          Send to shipping <Icon name="arrow" className="h-5 w-5" />
+          Send to shipping <Icon name="arrow" className="rtl-flip h-5 w-5" />
         </button>
         <p className="flex items-center gap-1.5 text-sm text-muted">
           <Icon name="info" className="h-4 w-4 shrink-0" /> The office can see it as soon as you send.

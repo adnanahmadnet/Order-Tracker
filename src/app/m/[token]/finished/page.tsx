@@ -19,7 +19,7 @@ export default async function MasterFinished({ params, searchParams }: { params:
   return (
     <div className="space-y-5">
       <Link href={`/m/${token}`} className="link inline-flex min-h-12 items-center gap-2 text-lg font-medium">
-        <Icon name="arrow" className="h-4 w-4 rotate-180" /> Back
+        <Icon name="arrow" className="h-4 w-4 rotate-180 rtl:rotate-0" /> Back
       </Link>
       <PageTitle icon="finished" large>Finished</PageTitle>
       {closed.length === 0 ? (
@@ -30,7 +30,7 @@ export default async function MasterFinished({ params, searchParams }: { params:
             <li key={o.id}>
               <Link href={`/m/${token}/orders/${o.id}`} className={`${card} block`}>
                 <span className="block text-xl font-medium">
-                  #{o.orderNumber} {o.customerName}
+                  #{o.orderNumber} <bdi translate="no">{o.customerName}</bdi>
                 </span>
                 <span className={`block text-lg font-medium ${o.status === "cancelled" ? "text-thread" : "text-leaf"}`}>
                   {o.status === "cancelled" ? "Cancelled. Stop work." : "Completed"}

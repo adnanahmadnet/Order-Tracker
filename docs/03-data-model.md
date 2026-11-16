@@ -117,7 +117,7 @@ The database stores only the record; files live in file storage.
 | order_id | only where the bill picture is filed (an open order of the master); a shipment can hold items of several orders |
 | master_id | the master's open `draft` is his cart; he has one at a time |
 | status | `draft` / `submitted` |
-| bill_photo_id | the uploaded bill/invoice (required to submit) |
+| bill_photo_id | the uploaded bill/invoice (optional since 16 Nov 2026) |
 | package_photo_id | optional photo of the packed items (the "snapshot" Anas asked for) |
 | submitted_at | |
 
@@ -228,3 +228,6 @@ The accountant's invoice and the handover to the shipping company are handled by
 ## Print layout (14 Nov 2026)
 - `FieldDef.slip` (14 Nov 2026): "On tailor slip", true / false; missing = on when under a Measurements heading. Stored only when it differs from that default. No migration.
 - `templates.print_layout` (JSON `{ slip: tailor|karigar|both|none, karigarRows: string[][], slipShow?: { design?, colour?, count? } }` of field keys; null = tailor slip only; migration 0017). It is copied into `order_items.snapshot.print`.
+
+## translations (16 Nov 2026, migration 0018)
+Urdu for text the office typed, shown on the master's screens. `source` (the English text, spaces tidied, primary key), `ur`, `created_at`. Each text is translated once and kept. The fixed words of the app are not here; they are written by hand in `src/lib/urdu.ts`.

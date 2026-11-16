@@ -26,7 +26,7 @@ export const chipDark = `${chip} badge-primary`;
 export function RequiredMark() {
   return (
     <>
-      <span aria-hidden className="ml-1 font-medium text-bad">
+      <span aria-hidden className="ms-1 font-medium text-bad">
         *
       </span>
       <span className="sr-only"> (required)</span>

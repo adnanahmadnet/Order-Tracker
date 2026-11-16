@@ -48,7 +48,7 @@ describe("shipping", () => {
     sh.saveShipmentItems(master, sid, itemIds, itemIds.slice(0, 4)); // only 4 of 5 ticked as present
     expect(sh.submitShipment(master, sid)).toEqual({ ok: false, reason: "unchecked" });
     sh.saveShipmentItems(master, sid, itemIds, itemIds); // all ticked
-    expect(sh.submitShipment(master, sid)).toEqual({ ok: false, reason: "no-bill" });
+    expect(sh.shipmentRequirements(sh.shipmentView(sid)!).hasBill).toBe(false); // no bill yet, and that is allowed (see the next test)
 
     sh.attachShipmentPhoto({ id: sid, orderId }, "bill", file);
     sh.attachShipmentPhoto({ id: sid, orderId }, "package", file); // optional proof
@@ -98,6 +98,15 @@ describe("shipping", () => {
     sh.saveShipmentItems(first.master, sid, second.itemIds, second.itemIds);
     sh.attachShipmentPhoto({ id: sid, orderId: second.orderId }, "bill", file);
     expect(sh.submitShipment(first.master, sid)).toEqual({ ok: true, orderCompleted: true });
+  });
+
+  it("the bill photo is optional: a shipment can be sent without one", () => {
+    const { master, orderId, itemIds } = setup(2);
+    const sid = sh.startShipment(master, orderId)!;
+    sh.saveShipmentItems(master, sid, itemIds, itemIds);
+    expect(sh.shipmentView(sid)!.billPhotoId).toBeNull();
+    expect(sh.submitShipment(master, sid)).toEqual({ ok: true, orderCompleted: true });
+    expect(sh.shipmentView(sid)!.status).toBe("submitted");
   });
 
   it("alerts Admin about new shipments until they are seen; bills are served only to the owning master", () => {
@@ -261,7 +270,6 @@ describe("shipping with mandatory fields", () => {
     expect(cart.items.map((i) => i.itemId).sort()).toEqual([a.itemIds[0], b.itemIds[0], c.itemIds[0]].sort());
     expect(new Set(cart.items.map((i) => i.orderId)).size).toBe(3); // three customers, one shipment
 
-    expect(sh.submitShipment(master, cart.id)).toEqual({ ok: false, reason: "no-bill" });
     sh.attachShipmentPhoto({ id: cart.id, orderId: cart.orderId }, "bill", file); // the one bill
     expect(sh.submitShipment(master, cart.id)).toEqual({ ok: true, orderCompleted: true });
 

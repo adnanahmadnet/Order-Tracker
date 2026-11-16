@@ -1,10 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Onest, Outfit } from "next/font/google";
+import { Noto_Naskh_Arabic, Onest, Outfit } from "next/font/google";
 import "./globals.css";
 
 // Ultraviolet's faces. next/font downloads them at build time and serves them from this site, so phones fetch nothing from Google.
 const outfit = Outfit({ subsets: ["latin"], weight: ["300", "500"], display: "swap", variable: "--font-outfit" });
 const onest = Onest({ subsets: ["latin"], weight: ["400", "500"], display: "swap", variable: "--font-onest" });
+// The Urdu of the master's screens (the English / اردو button). Naskh is plain and easy to read on a small phone.
+const urdu = Noto_Naskh_Arabic({ subsets: ["arabic"], weight: ["400", "500", "700"], display: "swap", variable: "--font-urdu" });
 
 export const metadata: Metadata = {
   title: "Custom Order Manager",
@@ -19,7 +21,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${outfit.variable} ${onest.variable} h-full antialiased`}>
+    <html lang="en" className={`${outfit.variable} ${onest.variable} ${urdu.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

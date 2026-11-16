@@ -36,8 +36,13 @@ export function PendingWork({ token, steps, all = false }: { token: string; step
                   {s.label}: {s.stepLabel}
                 </p>
                 <p className="text-base text-muted">
-                  {s.customerName}
-                  {s.designNumber ? ` - Design: ${s.designNumber}` : ""}
+                  <bdi translate="no">{s.customerName}</bdi>
+                  {s.designNumber ? (
+                    <span className="rtl:block">
+                      <span className="rtl:hidden"> - </span>
+                      Design: <bdi translate="no">{s.designNumber}</bdi>
+                    </span>
+                  ) : null}
                 </p>
                 <p className={`text-base font-medium ${left < 0 ? "text-thread" : ""}`}>
                   {left < 0 ? `Late by ${-left} day${left === -1 ? "" : "s"}` : `Due ${fmtDay(s.karigarDueDate)}`}

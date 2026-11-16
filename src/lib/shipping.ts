@@ -259,7 +259,7 @@ export function attachShipmentPhoto(
 
 export type SubmitResult =
   | { ok: true; orderCompleted: boolean }
-  | { ok: false; reason: "not-found" | "not-draft" | "no-items" | "not-ready" | "unchecked" | "no-bill" | "already-shipped" | "blocked" };
+  | { ok: false; reason: "not-found" | "not-draft" | "no-items" | "not-ready" | "unchecked" |"already-shipped" | "blocked" };
 
 /** Which requirements are still missing for a draft (used to show the checklist). */
 export function shipmentRequirements(v: ShipmentView) {
@@ -272,7 +272,7 @@ export function shipmentRequirements(v: ShipmentView) {
 
 /**
  * Submit = handed to the shipping company. Needs: at least one item, every chosen item approved for
- * shipping (steps finished, photos approved), every chosen item ticked as present, and the bill uploaded. An item can be in only one submitted shipment. The master can only
+ * shipping (steps finished, photos approved) and every chosen item ticked as present. The bill photo is optional. An item can be in only one submitted shipment. The master can only
  * submit while it is his turn on the order (Admin can allow it; see canMasterShip). When every item of the order has
  * shipped, the order becomes completed.
  */
@@ -286,7 +286,7 @@ export function submitShipment(masterId: number, shipmentId: number): SubmitResu
     if (!req.hasItems) return { ok: false, reason: "no-items" } as const;
     if (v.items.some((i) => !itemShipReadiness(i.itemId).ready)) return { ok: false, reason: "not-ready" } as const;
     if (!req.allChecked) return { ok: false, reason: "unchecked" } as const;
-    if (!req.hasBill) return { ok: false, reason: "no-bill" } as const;
+    // the bill photo is optional (16 Nov 2026, client request), so hasBill is not checked
     const orderIds = [...new Set(v.items.map((i) => i.orderId))];
     if (orderIds.some((oid) => !canMasterShip(masterId, oid))) return { ok: false, reason: "blocked" } as const;
 

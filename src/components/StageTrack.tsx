@@ -14,7 +14,7 @@ export function StageTrack({ steps }: { steps: TrackStep[] }) {
           {i > 0 && (
             <span
               aria-hidden
-              className={`absolute right-1/2 top-3 h-0.5 w-full -translate-y-1/2 ${s.state === "todo" ? "bg-rule-2" : "bg-accent"}`}
+              className={`absolute end-1/2 top-3 h-0.5 w-full -translate-y-1/2 ${s.state === "todo" ? "bg-rule-2" : "bg-accent"}`}
             />
           )}
           <span

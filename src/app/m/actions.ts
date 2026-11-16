@@ -55,7 +55,7 @@ export async function completeStageAction(f: FormData) {
 
 /**
  * One button does it all: save the ticked items (ticking an item means "I checked it is here"),
- * then send the shipment. Anything missing (no bill, an item not approved yet, not his turn)
+ * then send the shipment. Anything missing (an item not approved yet, not his turn)
  * brings the master back to the shipping page with a plain message, and the ticks are kept.
  */
 export async function sendShipmentAction(f: FormData) {

@@ -1,6 +1,6 @@
 # 04 - Screens and Flows
 
-All screens are mobile-first, English only, with big buttons. "It doesn't have to be pretty, just functional."
+All screens are mobile-first, with big buttons. The office side is English only; the master's screens have an English / اردو button (16 Nov 2026, see the Urdu section below). "It doesn't have to be pretty, just functional."
 
 ## Admin screens
 
@@ -67,7 +67,7 @@ Open the personal link, enter the personal code (one large input; numbers and le
 - Tick each item to confirm it is physically present.
 - Optionally take a photo of the packed items as proof.
 - Upload the **bill** for that shipment.
-- **Submit** only works once all ticked items are confirmed and the bill is uploaded.
+- **Submit** works once all ticked items are confirmed. The bill photo is optional (16 Nov 2026).
 
 ### M6. Print / export
 - Prints or exports PDF: **one page per item type per order**.
@@ -89,7 +89,7 @@ Admin moves an order up -> sequence renumbers -> master's dashboard re-sorts, an
 Master completes work -> uploads compressed photo -> status `pending` -> Admin approves or rejects with comment -> if approved, next stage unlocks and the master is notified; if rejected, the master re-uploads.
 
 ### Shipping
-Finished items go into the master's cart (all customers) -> he uploads one bill -> submits -> Admin receives a copy of the bill and the shipment record. Checkout stays blocked until the bill is uploaded.
+Finished items go into the master's cart (all customers) -> he uploads one bill -> submits -> Admin receives a copy of the bill and the shipment record. The bill photo is optional; checkout is blocked only until the items are ticked as present.
 
 ### Cancel an order
 Admin sets the order to cancelled -> master sees "Cancelled, stop work" and is notified (they may be mid-work) -> it later moves to archive. It is never hard-deleted.
@@ -169,3 +169,12 @@ The Masters page shows each master as a card: name and status, progress (items, 
 - What goes on the tailor slip: each field has "Print on the tailor slip" (on by default under Measurements; "All fields at once" has an On tailor slip row). Under Printed slips, "Also on the tailor slip" adds Design number, Colour and Item count (1 of 2) to the slip's header line.
 
 - Links for masters (14 Nov 2026): on the client's machine https is served on the same port 3002 (`deploy/linux/setup-https.sh`, undo with `rollback-https.sh`); `APP_URL` is the https address, so WhatsApp links are blue and open when tapped. Everybody, the office included, then uses the https address.
+
+## Urdu on the master's screens (16 Nov 2026, client request: "they do not understand English")
+- A pill button **English | اردو** sits at the top right of every master page (also on the code screen). The choice is kept on that phone (`localStorage` key `master-lang`) and the next visit opens in the same language.
+- Urdu on: every text on the page is swapped for Urdu and the page reads right to left, in the Noto Naskh Arabic face. Switching back to English puts every text back exactly as it was.
+- How: `src/components/UrduLayer.tsx` (in `src/app/m/[token]/layout.tsx`) walks the text of the page, also placeholders, titles, aria-labels and alt text, and watches for changes (a refresh, a step finished). Nothing is translated on the server, so the English page is the page.
+  1. The words of the app itself come from the hand-written list in `src/lib/urdu.ts` (`URDU`, months, history lines like "Naseem finished Cutting", dates like "12 November 2026", numbers kept). They are exact, free and work offline.
+  2. Any other text (field names, notes, step names, colours the office typed) is asked from `POST /api/m/[token]/translate` (needs the master's code), which uses Google Cloud Translation (`GOOGLE_TRANSLATE_API_KEY`) and saves each answer in the `translations` table, so a text is translated once. Without a key those texts stay English.
+- Never translated: anything inside `translate="no"` (customer names, design numbers, the master's name, the cart lines), numbers, codes, links, and the printed sheet (`/print`) and the PDF, which stay English.
+- Write new master-screen sentences as ONE piece of text (a template string), not as pieces around `{values}`, and add the Urdu to `URDU` in `src/lib/urdu.ts` with `{n}` where a number goes. Wrap names in `<bdi translate="no">`.

@@ -16,7 +16,7 @@ One simple tool where:
 2. Anas controls the **priority sequence**, and masters must follow it.
 3. Masters see only their assigned orders, upload photos, tick stages, and print.
 4. Anas approves photos before the next stage unlocks.
-5. Shipping cannot be submitted until a checklist is complete and the bill is uploaded.
+5. Shipping cannot be submitted until the checklist is complete. The bill photo is optional (changed 16 Nov 2026).
 
 ## Workflow being digitised (per garment)
 Cutting master (measure, fabric, lining, steaming, rough outline, cut, about 3-4 hours up to 3-4 days) -> Embroidery karigar (5-15 days; **photo required**) -> back to cutting master for stitching -> Checker (measurements, finishing) -> Packing -> Accountant (invoice) -> Shipping company -> confirmation to Anas.
@@ -32,7 +32,7 @@ Stages must be **configurable**, not hard-coded.
 - The Monday 3-hour priority session drops to minutes.
 - No master works out of sequence without Anas knowing.
 - No garment advances past a photo-gated stage without approval.
-- No shipment leaves with a missing item or without a bill.
+- No shipment leaves with a missing item (the bill photo is optional since 16 Nov 2026).
 
 ## Scale
 - About 20+ orders per month, 2-4 masters, 5-10 categories (not hundreds).
@@ -44,7 +44,7 @@ Stages must be **configurable**, not hard-coded.
 - No heavy security or full user management. A personal link plus PIN is enough.
 - No hard delete in the first versions.
 - Not for ready-made/stock products. **Custom orders only.**
-- Not multi-language (English only).
+- Not multi-language, except that the master's screens have an English / Urdu button (added 16 Nov 2026). The office side is English only.
 - Not a public website; no customer-facing access.
 
 ## Delivery constraint

@@ -35,7 +35,7 @@ export function SavedPictures({ photos: all, label, itemId }: { photos: { id: nu
               setGone((g) => [...g, p.id]);
               await removeItemPictureAction(itemId, p.id);
             }}
-            className="absolute -right-2 -top-2 grid h-6 w-6 place-items-center rounded-full bg-ink text-white"
+            className="absolute -end-2 -top-2 grid h-6 w-6 place-items-center rounded-full bg-ink text-white"
           >
             <Icon name="close" className="h-3.5 w-3.5" />
           </button>

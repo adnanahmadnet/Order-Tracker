@@ -1,0 +1,440 @@
+// English -> Urdu for the master's screens. Pure functions, used by the browser (UrduLayer) and by the translate route.
+// The words on the master's screens are written here by hand, so they are exact and work without internet.
+// Anything not listed (for example text the office typed) goes to the translation service and is saved (see translate.ts).
+// A number inside a sentence is written as {n}: "3 items" is looked up as "{n} items".
+
+export const URDU: Record<string, string> = {
+  "Ask the office a question": "دفتر سے سوال پوچھیں",
+  "Ask the office a question about this order": "اس آرڈر کے بارے میں دفتر سے سوال پوچھیں",
+  "Add another PDF": "ایک اور پی ڈی ایف شامل کریں",
+  "Add at least one photo of your work to finish this step.": "یہ قدم مکمل کرنے کے لیے اپنے کام کی کم از کم ایک تصویر لگائیں۔",
+  "Add image": "تصویر شامل کریں",
+  "Add more images": "مزید تصویریں شامل کریں",
+  "Add note": "نوٹ لکھیں",
+  "Add pictures": "تصویریں شامل کریں",
+  "Add pictures, or paste one with Ctrl+V": "تصویریں شامل کریں، یا Ctrl+V سے پیسٹ کریں",
+  Added: "شامل ہو گیا",
+  "All items": "تمام آئٹمز",
+  "Approved ✓": "منظور ✓",
+  "Attach the order as a PDF. With a PDF, the fields below may stay empty.": "آرڈر پی ڈی ایف کے طور پر لگائیں۔ پی ڈی ایف ہو تو نیچے کے خانے خالی رہ سکتے ہیں۔",
+  Attached: "لگ گیا",
+  Back: "واپس",
+  "Before you send": "بھیجنے سے پہلے",
+  Bill: "بل",
+  "Bill photo": "بل کی تصویر",
+  "Bill photo added": "بل کی تصویر لگ گئی",
+  Cancelled: "منسوخ",
+  "Cancelled - stop work": "منسوخ - کام روک دیں",
+  "Cancelled. Stop work.": "منسوخ۔ کام روک دیں۔",
+  Cart: "ٹوکری",
+  "Choose a PDF": "پی ڈی ایف چنیں",
+  "Choose pictures from this device": "اس فون سے تصویریں چنیں",
+  "Choose the items": "آئٹمز چنیں",
+  "Choose the items you are sending.": "جو آئٹمز بھیج رہے ہیں وہ چنیں۔",
+  Clear: "صاف کریں",
+  Colour: "رنگ",
+  Completed: "مکمل",
+  "Could not prepare one of the pictures. Please try again.": "ایک تصویر تیار نہیں ہو سکی۔ دوبارہ کوشش کریں۔",
+  Customer: "گاہک",
+  Design: "ڈیزائن",
+  "Design number": "ڈیزائن نمبر",
+  Done: "ہو گیا",
+  Download: "ڈاؤن لوڈ",
+  "Download PDF": "پی ڈی ایف ڈاؤن لوڈ کریں",
+  "Download all": "سب ڈاؤن لوڈ کریں",
+  "Download bill": "بل ڈاؤن لوڈ کریں",
+  "Download photo": "تصویر ڈاؤن لوڈ کریں",
+  "Download tailor slips": "درزی کی پرچیاں ڈاؤن لوڈ کریں",
+  "Download this picture": "یہ تصویر ڈاؤن لوڈ کریں",
+  "Due date": "آخری تاریخ",
+  "Due today": "آج آخری تاریخ ہے",
+  "Embroidery details": "کڑھائی کی تفصیل",
+  "Enter your code": "اپنا کوڈ لکھیں",
+  "Everything is filled in": "سب کچھ بھرا ہوا ہے",
+  "Extra notes": "اضافی نوٹ",
+  "Fill these in before you finish this step:": "یہ قدم مکمل کرنے سے پہلے انہیں بھریں:",
+  Finished: "مکمل",
+  "Finished items appear here, ready to send.": "مکمل آئٹمز یہاں نظر آئیں گے، بھیجنے کے لیے تیار۔",
+  "Finished items are here. Take out any you are not sending today.": "مکمل آئٹمز یہاں ہیں۔ جو آج نہیں بھیجنے وہ نکال دیں۔",
+  "Finished, in your cart": "مکمل، آپ کی ٹوکری میں",
+  "Finished. It is in your cart, ready to send.": "مکمل۔ یہ آپ کی ٹوکری میں ہے، بھیجنے کے لیے تیار۔",
+  "From the office": "دفتر کی طرف سے",
+  History: "تاریخچہ",
+  "I checked it is here": "میں نے دیکھ لیا کہ یہ موجود ہے",
+  "I have seen this order": "میں نے یہ آرڈر دیکھ لیا ہے",
+  "Image of your work": "آپ کے کام کی تصویر",
+  "In Progress": "جاری ہے",
+  Item: "آئٹم",
+  Items: "آئٹمز",
+  "Items from your orders appear here.": "آپ کے آرڈرز کے آئٹمز یہاں نظر آئیں گے۔",
+  "Karigar due": "کاریگر کی آخری تاریخ",
+  Loading: "لوڈ ہو رہا ہے",
+  "Mark complete": "مکمل کریں",
+  Master: "ماسٹر",
+  Measurements: "ناپ",
+  "My pending work": "میرا باقی کام",
+  "No finished orders yet.": "ابھی کوئی مکمل آرڈر نہیں۔",
+  "No items match": "کوئی آئٹم نہیں ملا",
+  "No items yet": "ابھی کوئی آئٹم نہیں",
+  "No orders right now.": "ابھی کوئی آرڈر نہیں۔",
+  "Not given yet": "ابھی دیا نہیں گیا",
+  "Not ready to send yet:": "ابھی بھیجنے کے لیے تیار نہیں:",
+  "Note added.": "نوٹ لگ گیا۔",
+  "Nothing has happened yet.": "ابھی کچھ نہیں ہوا۔",
+  "Nothing is ready to send.": "بھیجنے کے لیے کچھ تیار نہیں۔",
+  "Nothing is waiting for you.": "آپ کا کوئی کام باقی نہیں۔",
+  "One bill can be for many items.": "ایک بل کئی آئٹمز کا ہو سکتا ہے۔",
+  "One of these items was already sent.": "ان میں سے ایک آئٹم پہلے ہی بھیجا جا چکا ہے۔",
+  "One of these orders is closed.": "ان میں سے ایک آرڈر بند ہے۔",
+  Open: "کھولیں",
+  "Open an order to work on it. Any order can be done first.": "کام کے لیے آرڈر کھولیں۔ کوئی بھی آرڈر پہلے کیا جا سکتا ہے۔",
+  "Open the order and confirm it first.": "پہلے آرڈر کھولیں اور تصدیق کریں۔",
+  "Open the picture full size": "تصویر پوری بڑی کھولیں",
+  "Open the reference picture full size": "نمونے کی تصویر پوری بڑی کھولیں",
+  "Open this image": "یہ تصویر کھولیں",
+  "Open this picture": "یہ تصویر کھولیں",
+  Optional: "ضروری نہیں",
+  "Or choose files": "یا فائلیں چنیں",
+  Order: "آرڈر",
+  "Order PDF": "آرڈر پی ڈی ایف",
+  "Packed items": "پیک شدہ آئٹمز",
+  "Packed items photo": "پیک شدہ آئٹمز کی تصویر",
+  Paste: "پیسٹ",
+  "Paste or drop a picture here": "یہاں تصویر پیسٹ کریں یا ڈالیں",
+  "Photo needed": "تصویر چاہیے",
+  "Photo of the bill": "بل کی تصویر",
+  "Photo of the packed items": "پیک شدہ آئٹمز کی تصویر",
+  Picture: "تصویر",
+  "Picture under the notes": "نوٹ کے نیچے تصویر",
+  "Picture with the notes": "نوٹ کے ساتھ تصویر",
+  Pictures: "تصویریں",
+  "Please confirm you have seen this order": "براہِ کرم تصدیق کریں کہ آپ نے یہ آرڈر دیکھ لیا ہے",
+  "Please send an update": "براہِ کرم تازہ حال بھیجیں",
+  "Preparing pictures": "تصویریں تیار ہو رہی ہیں",
+  "Preparing...": "تیار ہو رہا ہے...",
+  "Press and hold here, then tap Paste": "یہاں دبائے رکھیں، پھر پیسٹ پر ٹیپ کریں",
+  "Press the button to tell the office you have it. Then you can finish steps.": "دفتر کو بتانے کے لیے بٹن دبائیں کہ آرڈر مل گیا ہے۔ پھر آپ قدم مکمل کر سکتے ہیں۔",
+  Print: "پرنٹ",
+  "Production status": "کام کی حالت",
+  "Progress. All done": "پیش رفت۔ سب مکمل",
+  Ready: "تیار",
+  "Reference picture": "نمونے کی تصویر",
+  "Reference pictures": "نمونے کی تصویریں",
+  Remake: "دوبارہ بنائیں",
+  Remove: "ہٹائیں",
+  "Remove this picture": "یہ تصویر ہٹائیں",
+  "Remove this picture?": "یہ تصویر ہٹائیں؟",
+  Save: "محفوظ کریں",
+  "Saved when you press Save:": "محفوظ کریں دبانے پر یہ محفوظ ہوگا:",
+  "Saved. The office can see it.": "محفوظ ہو گیا۔ دفتر اسے دیکھ سکتا ہے۔",
+  Search: "تلاش",
+  "Search customer, design, colour": "گاہک، ڈیزائن، رنگ تلاش کریں",
+  "See my pending work": "میرا باقی کام دیکھیں",
+  "Send a new image": "نئی تصویر بھیجیں",
+  "Send the items first. The order closes when all are sent.": "پہلے آئٹمز بھیجیں۔ سب بھیجنے پر آرڈر بند ہو جائے گا۔",
+  "Send to shipping": "شپنگ کو بھیجیں",
+  Sent: "بھیج دیا",
+  "Sent. The office can see it now.": "بھیج دیا۔ اب دفتر دیکھ سکتا ہے۔",
+  "Show the items packed and ready for the courier.": "کوریئر کے لیے پیک اور تیار آئٹمز دکھائیں۔",
+  "Some required fields are empty. Fill them in, then finish the step.": "کچھ ضروری خانے خالی ہیں۔ انہیں بھریں، پھر قدم مکمل کریں۔",
+  Steps: "قدم",
+  "Take or choose a picture": "تصویر کھینچیں یا چنیں",
+  "Take photo": "تصویر کھینچیں",
+  "Take photo of bill": "بل کی تصویر کھینچیں",
+  "Take photo of packed items": "پیک شدہ آئٹمز کی تصویر کھینچیں",
+  "Take the bill photo again": "بل کی تصویر دوبارہ کھینچیں",
+  "Take the photo again": "تصویر دوبارہ کھینچیں",
+  "Tap a picture to see it big.": "تصویر بڑی دیکھنے کے لیے اس پر ٹیپ کریں۔",
+  "Tap to minimize or open": "چھوٹا یا بڑا کرنے کے لیے ٹیپ کریں",
+  "That did not work. Please try again.": "یہ نہیں ہوا۔ دوبارہ کوشش کریں۔",
+  "That was not a picture. Copy the picture itself, then paste.": "یہ تصویر نہیں تھی۔ تصویر خود کاپی کریں، پھر پیسٹ کریں۔",
+  "The office can see it as soon as you send.": "بھیجتے ہی دفتر اسے دیکھ سکتا ہے۔",
+  "The same items from different customers, together.": "مختلف گاہکوں کے ایک جیسے آئٹمز ایک ساتھ۔",
+  "This link is not valid. Ask the office for a new link.": "یہ لنک درست نہیں۔ دفتر سے نیا لنک مانگیں۔",
+  "This order closes when every item is sent. Use the Cart.": "ہر آئٹم بھیجنے پر یہ آرڈر بند ہو جائے گا۔ ٹوکری استعمال کریں۔",
+  "This shipment was already sent.": "یہ شپمنٹ پہلے ہی بھیجی جا چکی ہے۔",
+  "This step needs an approved photo first.": "اس قدم کے لیے پہلے منظور شدہ تصویر چاہیے۔",
+  "Too many tries. Wait {n} minutes.": "بہت کوششیں ہو گئیں۔ {n} منٹ انتظار کریں۔",
+  "Try another word, or press Clear.": "کوئی اور لفظ آزمائیں، یا صاف کریں دبائیں۔",
+  Updated: "اپ ڈیٹ ہوا",
+  "Upload failed. Please try again.": "اپ لوڈ نہیں ہوا۔ دوبارہ کوشش کریں۔",
+  View: "دیکھیں",
+  "Waiting for approval": "منظوری کا انتظار",
+  "What are you sending?": "آپ کیا بھیج رہے ہیں؟",
+  "Write a note about this step": "اس قدم کے بارے میں نوٹ لکھیں",
+  "Write something in the note first.": "پہلے نوٹ میں کچھ لکھیں۔",
+  "Wrong code. Try again.": "غلط کوڈ۔ دوبارہ کوشش کریں۔",
+  "You can finish this order after the orders above it.": "آپ یہ آرڈر اوپر والے آرڈرز کے بعد مکمل کر سکتے ہیں۔",
+  "You can finish this step after the orders above it.": "آپ یہ قدم اوپر والے آرڈرز کے بعد مکمل کر سکتے ہیں۔",
+  "You can send this order after the orders above it. You can still get the bill photo ready now.": "آپ یہ آرڈر اوپر والے آرڈرز کے بعد بھیج سکتے ہیں۔ بل کی تصویر ابھی تیار کر سکتے ہیں۔",
+  "You can skip this, or take a clear photo of the bill.": "آپ اسے چھوڑ سکتے ہیں، یا بل کی صاف تصویر کھینچ سکتے ہیں۔",
+  "You can skip this.": "آپ اسے چھوڑ سکتے ہیں۔",
+  "Your code": "آپ کا کوڈ",
+  "Your part": "آپ کا حصہ",
+  "Your photo": "آپ کی تصویر",
+  "Your shipment": "آپ کی شپمنٹ",
+  "{n} item to make.": "{n} آئٹم بنانا ہے۔",
+  "{n} items to make.": "{n} آئٹمز بنانے ہیں۔",
+  "To make": "بنانا ہے",
+  "The order": "آرڈر",
+  PDF: "پی ڈی ایف",
+  "Delivery date": "ڈیلیوری کی تاریخ",
+  "Should take {n} day.": "{n} دن لگنے چاہییں۔",
+  "Should take {n} days.": "{n} دن لگنے چاہییں۔",
+  "Overdue by {n} day": "{n} دن لیٹ",
+  "Overdue by {n} days": "{n} دن لیٹ",
+  "+{n} more": "+{n} مزید",
+  "Download all ({n})": "سب ڈاؤن لوڈ کریں ({n})",
+  "{d}, {n}:{n}": "{d}، {n}:{n}",
+  "Steps {n} of {n}": "{2} میں سے {1} قدم",
+  "{n} of {n} field filled": "{2} میں سے {1} خانہ بھرا ہے",
+  "{n} of {n} fields filled": "{2} میں سے {1} خانے بھرے ہیں",
+  "The office": "دفتر",
+  "(the office fills this in)": "(دفتر یہ بھرتا ہے)",
+  // measurement and form words the office usually types (the office can type any other word: those go to the translation service)
+  "Measurements (inches)": "ناپ (انچ میں)",
+  "Measurement notes": "ناپ کے نوٹ",
+  "Fabric and colour": "کپڑا اور رنگ",
+  "Details (one on each line)": "تفصیل (ہر سطر میں ایک)",
+  Fabric: "کپڑا",
+  Lining: "استر",
+  Buttons: "بٹن",
+  Notes: "نوٹ",
+  Note: "نوٹ",
+  Size: "سائز",
+  Length: "لمبائی",
+  Chest: "سینہ",
+  Waist: "کمر",
+  Hip: "ہپ",
+  Hips: "ہپ",
+  Shoulder: "کندھا",
+  Armhole: "آرم ہول",
+  Biceps: "بازو کا موٹا حصہ",
+  Bicep: "بازو کا موٹا حصہ",
+  Wrist: "کلائی",
+  "Sleeve length": "آستین کی لمبائی",
+  Sleeve: "آستین",
+  Collar: "کالر",
+  Neck: "گردن",
+  Knees: "گھٹنے",
+  Knee: "گھٹنا",
+  Ankle: "ٹخنہ",
+  Thigh: "ران",
+  Calf: "پنڈلی",
+  Seat: "سیٹ",
+  Bottom: "پائنچہ",
+  Cuff: "کف",
+  Front: "آگے",
+  Inseam: "اندرونی لمبائی",
+  Rise: "رائز",
+  "Sherwani length": "شیروانی کی لمبائی",
+  "Kurta length": "کرتے کی لمبائی",
+  "Pants length": "پینٹ کی لمبائی",
+  "Pant length": "پینٹ کی لمبائی",
+  "Coat length": "کوٹ کی لمبائی",
+  "Jacket length": "جیکٹ کی لمبائی",
+  "Shirt length": "شرٹ کی لمبائی",
+  "Shoe size": "جوتے کا سائز",
+  "Add {n} inch": "{n} انچ بڑھائیں",
+  "Add {n} inches": "{n} انچ بڑھائیں",
+  "Reduce {n} inch": "{n} انچ کم کریں",
+  "Reduce {n} inches": "{n} انچ کم کریں",
+  Loose: "ڈھیلا",
+  Tight: "تنگ",
+  Red: "سرخ",
+  "Brick red": "اینٹ جیسا سرخ",
+  Maroon: "مرون",
+  Black: "کالا",
+  White: "سفید",
+  "Off white": "آف وائٹ",
+  Blue: "نیلا",
+  "Navy blue": "گہرا نیلا",
+  Green: "ہرا",
+  Yellow: "پیلا",
+  Gold: "سنہری",
+  Silver: "چاندی",
+  Grey: "سرمئی",
+  Gray: "سرمئی",
+  Brown: "بھورا",
+  Pink: "گلابی",
+  Cream: "کریم",
+  Beige: "بیج",
+  Orange: "نارنجی",
+  Purple: "جامنی",
+  Cotton: "سوتی",
+  Silk: "ریشم",
+  Velvet: "مخمل",
+  Wool: "اون",
+  "The master": "ماسٹر",
+  Hello: "السلام علیکم",
+  "Design:": "ڈیزائن:",
+  "- Design:": "- ڈیزائن:",
+  "Order #": "آرڈر نمبر",
+  Due: "آخری تاریخ",
+  "Due {d}": "آخری تاریخ {d}",
+  "{n} late,": "{n} لیٹ،",
+  "due this week": "اس ہفتے آخری تاریخ",
+  "Late by {n} days": "{n} دن لیٹ",
+  "Late by {n} day": "{n} دن لیٹ",
+  "Overdue by": "لیٹ",
+  day: "دن",
+  days: "دن",
+  more: "مزید",
+  "{n} more": "{n} مزید",
+  Late: "لیٹ",
+  Urgent: "فوری",
+  New: "نیا",
+  "Coming due": "تاریخ قریب ہے",
+  Making: "بن رہا ہے",
+  "Not made yet": "ابھی بنا نہیں",
+  "Not started": "شروع نہیں ہوا",
+  "In production": "بن رہا ہے",
+  "Ready to ship": "بھیجنے کے لیے تیار",
+  "Any status": "کوئی بھی حالت",
+  "Any due date": "کوئی بھی تاریخ",
+  "Due in {n} days": "{n} دن میں آخری تاریخ",
+  "{n} of {n} items finished. {n} left to make.": "{2} میں سے {1} آئٹمز مکمل۔ {3} بنانے باقی ہیں۔",
+  "{n} finished items from {n} customers. You can add one photo of the bill, then send them all together.": "{n} مکمل آئٹمز، {n} گاہکوں کے۔ آپ بل کی ایک تصویر لگا سکتے ہیں، پھر سب ایک ساتھ بھیجیں۔",
+  "{n} finished item from {n} customer. You can add one photo of the bill, then send them all together.": "{n} مکمل آئٹم، {n} گاہک کا۔ آپ بل کی ایک تصویر لگا سکتے ہیں، پھر سب ایک ساتھ بھیجیں۔",
+  "{n} finished items from {n} customer. You can add one photo of the bill, then send them all together.": "{n} مکمل آئٹمز، {n} گاہک کے۔ آپ بل کی ایک تصویر لگا سکتے ہیں، پھر سب ایک ساتھ بھیجیں۔",
+  "{n} item chosen": "{n} آئٹم چنا گیا",
+  "{n} items chosen": "{n} آئٹمز چنے گئے",
+  "Order received": "آرڈر ملا",
+  Cutting: "کٹائی",
+  Embroidery: "کڑھائی",
+  Stitching: "سلائی",
+  "Quality Check": "کوالٹی چیک",
+  Trial: "ٹرائل",
+  "Final check": "آخری چیک",
+  Shipped: "بھیج دیا گیا",
+  "(done)": "(مکمل)",
+  "(now)": "(اب)",
+  Sherwani: "شیروانی",
+  Kurta: "کرتا",
+  Pants: "پینٹ",
+  Pagri: "پگڑی",
+  Shawl: "شال",
+  Shawls: "شالیں",
+  Shirt: "شرٹ",
+  Shoes: "جوتے",
+};
+
+const LOWER: Record<string, string> = Object.fromEntries(Object.entries(URDU).map(([k, v]) => [k.toLowerCase(), v]));
+
+export const MONTHS: Record<string, string> = {
+  January: "جنوری",
+  February: "فروری",
+  March: "مارچ",
+  April: "اپریل",
+  May: "مئی",
+  June: "جون",
+  July: "جولائی",
+  August: "اگست",
+  September: "ستمبر",
+  October: "اکتوبر",
+  November: "نومبر",
+  December: "دسمبر",
+};
+
+const SHORT_MONTHS: Record<string, string> = Object.fromEntries(Object.entries(MONTHS).map(([en, ur]) => [en.slice(0, 3), ur]));
+
+const DATE_ANY = new RegExp("(\\d{1,2}) (" + [...Object.keys(MONTHS), ...Object.keys(SHORT_MONTHS)].join("|") + ")(?: (\\d{4}))?", "g");
+
+function dateUr(day: string, month: string, year?: string): string {
+  return `${day} ${MONTHS[month] ?? SHORT_MONTHS[month]}${year ? ` ${year}` : ""}`;
+}
+
+/** Texts that never go to translation: numbers, codes, names marked by the page, nothing with two letters in a row. */
+export function isTranslatable(s: string): boolean {
+  const t = s.trim();
+  if (t.length < 2 || t.length > 500) return false;
+  if (!/[A-Za-z]{2}/.test(t)) return false;
+  if (/^https?:\/\//i.test(t) || /^[\w.+-]+@[\w-]+\.[\w.]+$/.test(t)) return false;
+  return true;
+}
+
+/** The text with every number replaced by {n}, and the numbers in order. */
+export function templateOf(s: string): { key: string; nums: string[] } {
+  const nums = s.match(/\d+/g) ?? [];
+  return { key: s.replace(/\d+/g, "{n}"), nums };
+}
+
+export function fillNumbers(tpl: string, nums: string[]): string {
+  // {n} takes the next number in order; {1}, {2}... take that number (the Urdu word order can differ from the English)
+  let i = 0;
+  return tpl.replace(/\{(n|\d)\}/g, (_m, k: string) => (k === "n" ? nums[i++] : nums[Number(k) - 1]) ?? "");
+}
+
+/** The Urdu for a text from the hand-written list, or null when it is not there. Spaces around it are kept. */
+export function urduFor(text: string): string | null {
+  const lead = /^\s*/.exec(text)![0];
+  const trail = /\s*$/.exec(text)![0];
+  const core = text.trim().replace(/\s+/g, " ");
+  if (!core) return null;
+  const hit = urduCore(core);
+  return hit ? lead + hit + trail : null;
+}
+
+const MONTH_YEAR = new RegExp("^(" + Object.keys(MONTHS).join("|") + ") (\\d{4})$");
+
+function urduCore(core: string): string | null {
+  // "November 2026"
+  const my = MONTH_YEAR.exec(core);
+  if (my) return `${MONTHS[my[1]]} ${my[2]}`;
+  // dates ("12 November", "12 November 2026") are set aside as {d}, then numbers as {n}
+  const dates: string[] = [];
+  const noDates = core.replace(DATE_ANY, (_m, d: string, mo: string, y?: string) => {
+    dates.push(dateUr(d, mo, y));
+    return "{d}";
+  });
+  if (noDates === "{d}") return dates[0];
+  const nums = noDates.match(/\d+/g) ?? [];
+  const key = noDates.replace(/\d+/g, "{n}");
+  const hit = URDU[key] ?? URDU[core] ?? LOWER[key.toLowerCase()];
+  if (hit) {
+    let j = 0;
+    return fillNumbers(hit, nums).replace(/\{d\}/g, () => dates[j++] ?? "");
+  }
+  // "Design: ABC" keeps the number as it is
+  const design = /^(- )?Design: (.+)$/.exec(core);
+  if (design) return `${design[1] ?? ""}ڈیزائن: ${design[2]}`;
+  // the history lines: "Naseem finished Cutting (Sherwani)" - the names stay as they are, the words around them are Urdu
+  const line = historyLine(core);
+  if (line) return line;
+  // ": Cutting" after "To make"
+  const colon = /^: (.+)$/.exec(core);
+  if (colon) return `: ${urduCore(colon[1]) ?? colon[1]}`;
+  // a label with a colon: "Chest:"
+  const label = /^(.+):$/.exec(core);
+  if (label) {
+    const inner = urduCore(label[1]);
+    if (inner) return `${inner}:`;
+  }
+  // "Sherwani, Pants": every part must be known
+  if (core.includes(", ")) {
+    const parts = core.split(", ").map((p) => urduCore(p));
+    if (parts.every((p) => p)) return parts.join("، ");
+  }
+  return null;
+}
+
+const part = (x: string) => urduCore(x) ?? x;
+const withItem = (of: string | undefined) => (of ? ` (${part(of)})` : "");
+
+/** One line of the order history ("Naseem finished Cutting (Sherwani)", see describeEvent in history.ts). */
+function historyLine(s: string): string | null {
+  let m: RegExpExecArray | null;
+  if ((m = /^(The office|The master|[A-Z]\S+(?: [A-Z]\S+)?) confirmed they have seen the order$/.exec(s))) return `${part(m[1])} نے تصدیق کی کہ آرڈر دیکھ لیا`;
+  if ((m = /^(The office|The master|[A-Z]\S+(?: [A-Z]\S+)?) sent (.+) back for a remake$/.exec(s))) return `${part(m[1])} نے ${part(m[2])} دوبارہ بنانے کے لیے واپس بھیجا`;
+  if ((m = /^(The office|The master|[A-Z]\S+(?: [A-Z]\S+)?) sent (.+)$/.exec(s))) return `${part(m[1])} نے ${part(m[2])} بھیج دیا`;
+  if ((m = /^(The office|The master|[A-Z]\S+(?: [A-Z]\S+)?) finished (.+?)(?: \((.+)\))?$/.exec(s))) return `${part(m[1])} نے ${part(m[2])} مکمل کیا${withItem(m[3])}`;
+  if ((m = /^(The office|The master|[A-Z]\S+(?: [A-Z]\S+)?) added a note on (.+?)(?: \((.+)\))?$/.exec(s))) return `${part(m[1])} نے ${part(m[2])} پر نوٹ لکھا${withItem(m[3])}`;
+  if ((m = /^(The office|The master|[A-Z]\S+(?: [A-Z]\S+)?) left an instruction for (.+?)(?: \((.+)\))?$/.exec(s))) return `${part(m[1])} نے ${part(m[2])} کے لیے ہدایت دی${withItem(m[3])}`;
+  if ((m = /^(The office|The master|[A-Z]\S+(?: [A-Z]\S+)?) added an image to (.+?)(?: \((.+)\))?$/.exec(s))) return `${part(m[1])} نے ${part(m[2])} میں تصویر لگائی${withItem(m[3])}`;
+  return null;
+}
+
+/** One text the way it is sent to the service and saved: spaces tidied. */
+export function cleanSource(text: string): string {
+  return text.trim().replace(/\s+/g, " ");
+}

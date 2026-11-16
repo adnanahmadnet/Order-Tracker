@@ -120,7 +120,7 @@ export function PictureInput({
               type="button"
               aria-label={`Remove picture ${i + 1}`}
               onClick={() => keep(files.filter((_, n) => n !== i))}
-              className={`absolute -right-1.5 -top-1.5 grid place-items-center rounded-full border border-rule bg-white text-ink shadow-sm hover:bg-bad-soft hover:text-bad ${small ? "h-5 w-5" : "h-6 w-6"}`}
+              className={`absolute -end-1.5 -top-1.5 grid place-items-center rounded-full border border-rule bg-white text-ink shadow-sm hover:bg-bad-soft hover:text-bad ${small ? "h-5 w-5" : "h-6 w-6"}`}
             >
               <Icon name="close" className="h-3 w-3" />
             </button>

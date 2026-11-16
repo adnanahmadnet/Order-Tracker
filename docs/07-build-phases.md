@@ -95,7 +95,7 @@ Reminder: Anas will test everything himself first and will not release a half pr
 - Order becomes completed when all its items are shipped.
 
 **Done when**
-- Submitting without the bill is blocked.
+- Submitting without the bill is allowed (the bill photo became optional on 16 Nov 2026).
 - Submitting a 5-Sherwani shipment with one bill records all five.
 - Admin can open the bill from the order.
 

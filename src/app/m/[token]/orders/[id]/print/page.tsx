@@ -24,7 +24,7 @@ export default async function MasterPrint({ params }: { params: Promise<{ token:
     <div className="space-y-4">
       <div className="flex flex-wrap gap-3 print:hidden">
         <Link href={`/m/${token}/orders/${order.id}`} className={`${btnSecondary} gap-2`}>
-          <Icon name="arrow" className="h-4 w-4 rotate-180" /> Back
+          <Icon name="arrow" className="h-4 w-4 rotate-180 rtl:rotate-0" /> Back
         </Link>
         <PrintButton pdfUrl={`/api/m/${token}/orders/${order.id}/pdf?view=1`} />
         <a href={`/api/m/${token}/orders/${order.id}/pdf`} className={btnSecondary}>

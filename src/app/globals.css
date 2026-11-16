@@ -381,6 +381,29 @@ header label,
   min-height: 3rem;
 }
 
+/* Urdu on the master's screens: one plain Urdu face everywhere, with a little more line height. */
+.urdu-font,
+.urdu-font * {
+  font-family: var(--font-urdu), "Noto Naskh Arabic", "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", system-ui, sans-serif;
+}
+.urdu-font {
+  line-height: 1.7;
+}
+/* Urdu letters are small at the usual small sizes: make the small text a little bigger. */
+.urdu-font .text-xs {
+  font-size: 0.9rem;
+}
+.urdu-font .text-sm {
+  font-size: 1rem;
+}
+.urdu-font .text-base {
+  font-size: 1.1rem;
+}
+/* Arrows that point forward must point the other way when the page reads right to left. */
+[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
+}
+
 /* Inline bold is the real medium weight, never a synthesized one. */
 b,
 strong {

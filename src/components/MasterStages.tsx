@@ -47,7 +47,7 @@ export function MasterStages({
             {refs.length > 1 && (
               <a href={`/api/m/${token}/items/${itemId}/pictures`} download className="btn btn-quiet h-auto min-h-11 gap-2 px-4 py-2 text-base">
                 <Icon name="download" className="h-5 w-5 shrink-0" />
-                Download all ({refs.length})
+                {`Download all (${refs.length})`}
               </a>
             )}
           </div>
@@ -71,7 +71,7 @@ export function MasterStages({
                         download
                         aria-label="Download this picture"
                         title="Download"
-                        className="absolute bottom-1.5 right-1.5 grid h-9 w-9 place-items-center rounded-full bg-white/95 text-ink shadow"
+                        className="absolute bottom-1.5 end-1.5 grid h-9 w-9 place-items-center rounded-full bg-white/95 text-ink shadow"
                       >
                         <Icon name="download" className="h-5 w-5" />
                       </a>
@@ -96,11 +96,11 @@ export function MasterStages({
                   className={`space-y-2 rounded-2xl p-4 ${s.status === "open" ? "bg-accent-soft" : "bg-paper-3"}`}
                 >
                   <div className="text-xl font-medium">
-                    {s.status === "done" ? <Icon name="check" className="mr-1 inline h-5 w-5" /> : s.status === "locked" ? <Icon name="lock" className="mr-1 inline h-5 w-5" /> : null}
+                    {s.status === "done" ? <Icon name="check" className="me-1 inline h-5 w-5" /> : s.status === "locked" ? <Icon name="lock" className="me-1 inline h-5 w-5" /> : null}
                     {n + 1}. {s.label}
                   </div>
                   {/* only the number of days, never a date */}
-                  {s.days && s.status !== "done" && <p className="text-base text-muted">Should take {s.days} day{s.days === 1 ? "" : "s"}.</p>}
+                  {s.days && s.status !== "done" && <p className="text-base text-muted">{`Should take ${s.days} day${s.days === 1 ? "" : "s"}.`}</p>}
 
                   {instructions.get(s.key) && (
                     <div className="rounded-xl border border-accent/30 bg-white/80 px-3 py-2">

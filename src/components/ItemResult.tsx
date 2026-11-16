@@ -39,7 +39,7 @@ export function ItemResult({
         <div className="min-w-0 flex-1">
           {/* the link stretches over the whole card, the pictures sit above it */}
           <Link href={href} className="group after:absolute after:inset-0 after:content-['']" aria-label={`Open order ${row.orderNumber}, ${row.customerName}, ${row.label}`}>
-            <p className="break-words text-xl font-medium leading-snug group-hover:underline">{row.customerName}</p>
+            <p className="break-words text-xl font-medium leading-snug group-hover:underline"><bdi translate="no">{row.customerName}</bdi></p>
           </Link>
           <p className="flex items-center gap-2 text-base text-muted">
             <span aria-hidden className={`inline-block h-2 w-2 shrink-0 rounded-full ${DOT[row.status]}`} />
@@ -55,11 +55,11 @@ export function ItemResult({
       <dl className="grid gap-x-4 gap-y-2 text-base sm:grid-cols-2">
         <div>
           <dt className="text-sm text-muted">Order</dt>
-          <dd className="font-medium">Order #{row.orderNumber}</dd>
+          <dd className="font-medium">Order #<bdi translate="no">{row.orderNumber}</bdi></dd>
         </div>
         <div>
           <dt className="text-sm text-muted">Design number</dt>
-          <dd className="font-medium">{row.designNumber ?? "-"}</dd>
+          <dd className="font-medium" translate="no">{row.designNumber ?? "-"}</dd>
         </div>
         <div>
           <dt className="text-sm text-muted">Colour</dt>
@@ -71,7 +71,7 @@ export function ItemResult({
         <div>
           <dt className="text-sm text-muted">Karigar due</dt>
           <dd className="font-medium">{fmtDay(row.karigarDueDate)}</dd>
-          {late > 0 && <dd className="text-sm font-medium text-thread">Overdue by {late} day{late === 1 ? "" : "s"}</dd>}
+          {late > 0 && <dd className="text-sm font-medium text-thread">{`Overdue by ${late} day${late === 1 ? "" : "s"}`}</dd>}
         </div>
         {showMasters && (
           <div>
@@ -93,7 +93,7 @@ export function ItemResult({
               <img src={photoUrl(id)} alt={`Reference picture for ${row.label}`} className="h-full w-full object-cover" />
             </a>
           ))}
-          {more > 0 && <span className="text-sm text-muted">+{more} more</span>}
+          {more > 0 && <span className="text-sm text-muted">{`+${more} more`}</span>}
         </div>
       )}
     </li>
