@@ -27,6 +27,7 @@ export default async function MasterPrint({ params }: { params: Promise<{ token:
           <Icon name="arrow" className="h-4 w-4 rotate-180" /> Back
         </Link>
         <PrintButton pdfUrl={`/api/m/${token}/orders/${order.id}/pdf?view=1`} />
+        {hasSlips(data) && <PrintButton pdfUrl={`/api/m/${token}/orders/${order.id}/pdf?only=slips&view=1`} label="Print tailor slips" />}
         <a href={`/api/m/${token}/orders/${order.id}/pdf`} className={btnSecondary}>
           Download PDF
         </a>

@@ -74,6 +74,7 @@ Open the personal link, enter the personal code (one large input; numbers and le
 - Admin can configure which items share a page (for example Pagri + Shoes), to save printing cost.
 - Measurements and attached pictures **auto-resize** to fit one page.
 - Print-friendly black and white layout.
+- **Print tailor slips** prints only the tailor slips page, the same way.
 - **Print** prints the same PDF as Download PDF (16 Nov 2026), so the paper looks the same on every phone: on a computer the print window opens, on a phone or tablet the PDF opens to print from there (iPhone: Share > Print).
 - **Download / share PDF** button. Masters often print at an internet cafe or print shop, so they need a PDF file they can send on WhatsApp, not only the phone's print dialog.
 
