@@ -212,3 +212,6 @@ The Masters page shows each master as a card: name and status, progress (items, 
 
 ## Narrow phones (17 Nov 2026)
 - On a narrow phone the step names under the progress bar no longer overlap (the bar swipes sideways when needed), and in a step card the name is shown in full with "Mark complete" on the next row when it does not fit beside the name.
+
+## Pending shipment (17 Nov 2026)
+- In the cart an item is shown once: in "Your shipment". "Pending shipment" only lists items the karigar took out with the cross (a red card with a green tick to put it back); it is hidden when nothing is out.

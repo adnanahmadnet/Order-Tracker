@@ -53,7 +53,7 @@ export const HINDI: Record<string, string> = {
   "Fill these in before you finish this step:": "यह स्टेप पूरा करने से पहले इन्हें भरें:",
   Finished: "पूरा हुआ",
   "Finished items appear here, ready to send.": "पूरे हुए आइटम यहाँ दिखेंगे, भेजने के लिए तैयार।",
-  "Finished items are here. Take out any you are not sending today.": "पूरे हुए आइटम यहाँ हैं। जो आज नहीं भेजने हैं उन्हें निकाल दें।",
+  "Items you took out of the shipment. Tap the tick to put one back.": "जो आइटम आपने शिपमेंट से निकाले। वापस डालने के लिए टिक दबाएँ।",
   "Finished, in your cart": "पूरा हुआ, आपकी टोकरी में",
   "Finished. It is in your cart, ready to send.": "पूरा हुआ। यह आपकी टोकरी में है, भेजने के लिए तैयार।",
   "From the office": "ऑफिस की तरफ़ से",

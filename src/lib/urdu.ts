@@ -53,7 +53,7 @@ export const URDU: Record<string, string> = {
   "Fill these in before you finish this step:": "یہ قدم مکمل کرنے سے پہلے انہیں بھریں:",
   Finished: "مکمل",
   "Finished items appear here, ready to send.": "مکمل آئٹمز یہاں نظر آئیں گے، بھیجنے کے لیے تیار۔",
-  "Finished items are here. Take out any you are not sending today.": "مکمل آئٹمز یہاں ہیں۔ جو آج نہیں بھیجنے وہ نکال دیں۔",
+  "Items you took out of the shipment. Tap the tick to put one back.": "جو آئٹمز آپ نے شپمنٹ سے نکالے۔ واپس ڈالنے کے لیے ٹِک دبائیں۔",
   "Finished, in your cart": "مکمل، آپ کی ٹوکری میں",
   "Finished. It is in your cart, ready to send.": "مکمل۔ یہ آپ کی ٹوکری میں ہے، بھیجنے کے لیے تیار۔",
   "From the office": "دفتر کی طرف سے",

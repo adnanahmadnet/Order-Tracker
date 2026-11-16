@@ -53,7 +53,7 @@ export const BENGALI: Record<string, string> = {
   "Fill these in before you finish this step:": "এই ধাপ শেষ করার আগে এগুলো পূরণ করুন:",
   Finished: "শেষ হয়েছে",
   "Finished items appear here, ready to send.": "শেষ হওয়া আইটেম এখানে দেখা যাবে, পাঠানোর জন্য তৈরি।",
-  "Finished items are here. Take out any you are not sending today.": "শেষ হওয়া আইটেম এখানে আছে। আজ যেগুলো পাঠাবেন না সেগুলো বাদ দিন।",
+  "Items you took out of the shipment. Tap the tick to put one back.": "যেসব আইটেম আপনি চালান থেকে বাদ দিয়েছেন। ফিরিয়ে দিতে টিক চাপুন।",
   "Finished, in your cart": "শেষ হয়েছে, আপনার ঝুড়িতে",
   "Finished. It is in your cart, ready to send.": "শেষ হয়েছে। এটি আপনার ঝুড়িতে আছে, পাঠানোর জন্য তৈরি।",
   "From the office": "অফিস থেকে",

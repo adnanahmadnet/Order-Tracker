@@ -81,6 +81,7 @@ export function ShipmentFlow({
   const toggle = (id: number) => setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
 
   const hasItems = picked.length > 0;
+  const pending = ready.filter((i) => !picked.includes(i.id)); // finished items the karigar left out of the shipment
   const canSend = hasItems && turnOk; // the bill photo is optional
   const photoUrl = (id: number) => `/api/m/${token}/photos/${id}`;
   const endpoint = `/api/m/${token}/orders/${orderId}/ship-photos`;
@@ -100,15 +101,17 @@ export function ShipmentFlow({
           </p>
         )}
 
+        {/* only items that are NOT in "Your shipment" are listed here: they appear when the karigar takes one out with the cross, and go back when he ticks it */}
+        {(pending.length > 0 || (locked?.length ?? 0) > 0) && (
         <section className="space-y-3">
-          <StepTitle n={1} hint="Finished items are here. Take out any you are not sending today.">
+          <StepTitle n={1} hint="Items you took out of the shipment. Tap the tick to put one back.">
             Pending shipment
           </StepTitle>
           <ul className="space-y-2">
-            {ready.map((i) => {
+            {pending.map((i) => {
               const on = picked.includes(i.id);
               return (
-                <li key={i.id} className={`flex items-center gap-3 rounded-2xl border-2 p-4 shadow-sm ${on ? "border-ok/50 bg-ok-soft/40" : "border-bad/40 bg-bad-soft/40"}`}>
+                <li key={i.id} className="flex items-center gap-3 rounded-2xl border-2 border-bad/40 bg-bad-soft/40 p-4 shadow-sm">
                   <span className="min-w-0 flex-1">
                     <span className="flex flex-wrap items-center gap-2">
                       <span className="break-words text-xl font-medium">{i.label}</span>
@@ -138,6 +141,7 @@ export function ShipmentFlow({
           </ul>
           <LockedItems items={locked ?? []} />
         </section>
+        )}
       </div>
 
       <form action={sendShipmentAction} className="space-y-4 overflow-hidden rounded-3xl border border-rule-2 bg-paper-2 p-5 shadow-sm lg:sticky lg:top-4 lg:order-1">
