@@ -1,6 +1,6 @@
 "use client";
 
-import { btnPrimary } from "./ui";
+import { btnPrimary, btnSecondary } from "./ui";
 
 /**
  * Print. With `pdfUrl` it prints the same PDF as Download PDF, so the paper looks the same on every device (Safari on
@@ -8,7 +8,7 @@ import { btnPrimary } from "./ui";
  * A computer with Chrome or Edge prints it straight away from a hidden frame; phones, tablets and other browsers open
  * the PDF, to print it from there (iPhone: Share > Print). Without `pdfUrl` it prints the page (the item report).
  */
-export function PrintButton({ pdfUrl }: { pdfUrl?: string }) {
+export function PrintButton({ pdfUrl, label = "Print", primary = true }: { pdfUrl?: string; label?: string; primary?: boolean }) {
   const print = () => {
     if (!pdfUrl) return window.print();
     const ua = navigator.userAgent;
@@ -35,8 +35,8 @@ export function PrintButton({ pdfUrl }: { pdfUrl?: string }) {
     document.body.appendChild(frame);
   };
   return (
-    <button type="button" onClick={print} className={btnPrimary}>
-      Print
+    <button type="button" onClick={print} className={primary ? btnPrimary : btnSecondary}>
+      {label}
     </button>
   );
 }

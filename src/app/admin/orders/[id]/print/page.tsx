@@ -17,6 +17,7 @@ export default async function AdminPrint({ params }: { params: Promise<{ id: str
           <Icon name="arrow" className="h-4 w-4 rotate-180" /> Back
         </Link>
         <PrintButton pdfUrl={`/api/admin/orders/${id}/pdf?view=1`} />
+        {hasSlips(data) && <PrintButton pdfUrl={`/api/admin/orders/${id}/pdf?only=slips&view=1`} label="Print tailor slips" />}
         <a href={`/api/admin/orders/${id}/pdf`} className={btnSecondary}>
           Download PDF
         </a>
