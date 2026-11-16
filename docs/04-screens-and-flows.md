@@ -1,6 +1,6 @@
 # 04 - Screens and Flows
 
-All screens are mobile-first, with big buttons. The office side is English only; the master's screens have an English / اردو button (16 Nov 2026, see the Urdu section below). "It doesn't have to be pretty, just functional."
+All screens are mobile-first, with big buttons. The office side is English only; the master's screens have an English / اردو / বাংলা / हिन्दी button (16-17 Nov 2026, see the last section). "It doesn't have to be pretty, just functional."
 
 ## Admin screens
 
@@ -66,7 +66,7 @@ Open the personal link, enter the personal code (one large input; numbers and le
 - Finished items of all the master's customers are in his **cart** automatically; he can take out any he is not sending today.
 - Tick each item to confirm it is physically present.
 - Optionally take a photo of the packed items as proof.
-- Upload the **bill** for that shipment.
+- The **bill** photo and a packed-items photo are optional: in the "Before you send" list each has a round plus that opens the camera (17 Nov 2026; before, they were two sections of the page).
 - **Submit** works once all ticked items are confirmed. The bill photo is optional (16 Nov 2026).
 
 ### M6. Print / export
@@ -141,7 +141,7 @@ The Masters page shows each master as a card: name and status, progress (items, 
 - A picture pasted into any text or number box on the customer form stays under that box (also for the master and in print). A sent customer's page has the WhatsApp buttons to tell each master about the new or changed order.
 - On the customer form a field with pictures is framed, with its pictures right under its own box.
 - Steps have a "Should take N days once started" box (item builder custom steps and the saved steps editor). The office sees the finish date and "Late by N days"; the master sees only the days.
-- Masters page: "Your WhatsApp number" box. Master order page: "Ask the office a question" button (also the customer name) opens WhatsApp to the office with the order named and a link.
+- Masters page: "Your WhatsApp number" box (it was where masters' questions went; the master's "Ask the office a question" button was removed on 17 Nov 2026, so nothing uses the number now).
 - Item builder: "From the order" tiles Customer name, Order number, Design number and Delivery date (start filled from the order; the office can change them).
 - Master order page: empty fields are hidden; a "Warn if empty" field that is empty shows its name with a blank box.
 - Master home: the whole order card opens the order (no Open order button).
@@ -171,11 +171,44 @@ The Masters page shows each master as a card: name and status, progress (items, 
 
 - Links for masters (14 Nov 2026): on the client's machine https is served on the same port 3002 (`deploy/linux/setup-https.sh`, undo with `rollback-https.sh`); `APP_URL` is the https address, so WhatsApp links are blue and open when tapped. Everybody, the office included, then uses the https address.
 
-## Urdu on the master's screens (16 Nov 2026, client request: "they do not understand English")
-- A pill button **English | اردو** sits at the top right of every master page (also on the code screen). The choice is kept on that phone (`localStorage` key `master-lang`) and the next visit opens in the same language.
-- Urdu on: every text on the page is swapped for Urdu and the page reads right to left, in the Noto Naskh Arabic face. Switching back to English puts every text back exactly as it was.
-- How: `src/components/UrduLayer.tsx` (in `src/app/m/[token]/layout.tsx`) walks the text of the page, also placeholders, titles, aria-labels and alt text, and watches for changes (a refresh, a step finished). Nothing is translated on the server, so the English page is the page.
-  1. The words of the app itself come from the hand-written list in `src/lib/urdu.ts` (`URDU`, months, history lines like "Naseem finished Cutting", dates like "12 November 2026", numbers kept). They are exact, free and work offline.
-  2. Any other text (field names, notes, step names, colours the office typed) is asked from `POST /api/m/[token]/translate` (needs the master's code), which uses Google Cloud Translation (`GOOGLE_TRANSLATE_API_KEY`) and saves each answer in the `translations` table, so a text is translated once. Without a key those texts stay English.
-- Never translated: anything inside `translate="no"` (customer names, design numbers, the master's name, the cart lines), numbers, codes, links, and the printed sheet (`/print`) and the PDF, which stay English.
-- Write new master-screen sentences as ONE piece of text (a template string), not as pieces around `{values}`, and add the Urdu to `URDU` in `src/lib/urdu.ts` with `{n}` where a number goes. Wrap names in `<bdi translate="no">`.
+## Urdu, Bengali and Hindi on the master's screens (16-17 Nov 2026, client request: "they do not understand English")
+- A pill button **English | اردو | বাংলা | हिन्दी** sits at the top right of every master page (also on the code screen). The choice is kept on that phone (`localStorage` key `master-lang`) and the next visit opens in the same language. Printing (`/print`) has no button and stays English.
+- Urdu on: every text on the page is swapped for Urdu and the page reads right to left, in the Noto Naskh Arabic face. Bengali on: the same, left to right, in the Noto Sans Bengali face (standard Bengali, also fine for West Bengal). Hindi on: the same, left to right, in the Noto Sans Devanagari face. Switching back to English puts every text back exactly as it was.
+- How: `src/components/LanguageLayer.tsx` (in `src/app/m/[token]/layout.tsx`) walks the text of the page, also placeholders, titles, aria-labels and alt text, and watches for changes (a refresh, a step finished). Nothing is translated on the server, so the English page is the page.
+  1. The words of the app itself come from the hand-written lists in `src/lib/urdu.ts`, `src/lib/bengali.ts` and `src/lib/hindi.ts` (words, months, history lines like "Naseem finished Cutting", dates like "12 November 2026", numbers kept). They are exact, free and work offline.
+  2. Any other text (field names, notes, step names, colours the office typed) is asked from `POST /api/m/[token]/translate` (needs the master's code), which uses Google Cloud Translation (`GOOGLE_TRANSLATE_API_KEY`) and saves each answer per language in the `text_translations` table, so a text is translated once per language. Without a key those texts stay English.
+- Never translated: anything inside `translate="no"` (customer names, design numbers, the master's name, the cart lines), numbers, codes, links, and the printed sheet and the PDF, which stay English.
+- Write new master-screen sentences as ONE piece of text (a template string), not as pieces around `{values}`, and add it to both lists with `{n}` where a number goes. Wrap names in `<bdi translate="no">`.
+
+## Pictures for the steps (17 Nov 2026)
+- On the master's screens a step has a picture, with its name small next to or under it: scissors (cutting), a spool of thread and a needle (stitching), a sewing machine (embroidery), magnifier with a tick (quality / final check), hanger (trial), box (packing), truck (shipped), clipboard (order received), iron, button, tape, cloth, drop. A step whose name has no known word has no picture.
+- The progress bar of an order or item shows them in circles (done = filled with a small green tick, now = ringed, to come = pale), the names under them in small writing; with many steps the bar swipes sideways when they do not fit (no scrollbar is drawn). On the order page each step box is a big picture with the name beside it, a tick when done and a lock when it cannot be done yet. "My pending work" cards and the "To make" chip show the picture and the words.
+- The four tiles of the master's home page are a picture with the name small under it and the count in the corner (hanger = items, clock = my pending work, truck = cart, tick = finished). "I have seen this order" has an eye, "Mark complete" a tick.
+- The master's "Ask the office a question" button was removed (17 Nov 2026).
+- The picture comes from words in the step name (`src/lib/step-icon.ts`).
+
+## Master order page: tidier steps (17 Nov 2026)
+- The order card has no "In Progress" label (only Completed or Cancelled). The days-left chip is bigger.
+- A finished step folds up into one row (picture, name, tick); tap it to see its notes and pictures. Steps still to do stay open.
+- "Add note" and "Mark complete" are smaller buttons, not full width.
+
+## Step buttons and the shipment photos (17 Nov 2026)
+- On the master's order page "Mark complete" is at the end of the step's row, next to its name. A note is optional: tap the round plus under the step to write one.
+- On the cart page the two photo boxes are gone; the bill photo and the packed-items photo are plus buttons on their rows in "Before you send".
+
+## Green and red steps, tick or cross in the cart (17 Nov 2026)
+- On the master's order page a finished step is a green card, the step to do now a red card, and later steps a paler red.
+- In the cart the red cross to take an item out is only in "Your shipment". In the "Pending shipment" list an item that is in the shipment has no button; an item that is out has a red row and a green tick that puts it back. The "Add" button is gone.
+
+## Cart layout (17 Nov 2026)
+- On a wide screen "Your shipment" is on the left and the finished items are on the right, under the heading "Pending shipment" (before: "What are you sending?"). On a phone the items come first, then the shipment panel.
+
+## Master History (17 Nov 2026)
+- A **History** tile next to Finished opens a list of everything the master has sent, newest first. Each is a folded row (the date, who it was for); tap it to open the customer, design and items, each in its own small box, and a small bill picture with a small Download bill button and the packed-items picture. It stays after the orders are completed (Finished does not keep them). "Sent back" marks an item that came back for a remake. "No bill photo" when none was taken.
+
+## Finished hidden, smaller on a phone (17 Nov 2026)
+- The Finished tile is hidden on the master's home page for now (the page still exists). The home tiles are Items, My pending work, Cart and History.
+- On a phone the master's screens are a little smaller (text, buttons, tiles). Wider screens are unchanged.
+
+## Narrow phones (17 Nov 2026)
+- On a narrow phone the step names under the progress bar no longer overlap (the bar swipes sideways when needed), and in a step card the name is shown in full with "Mark complete" on the next row when it does not fit beside the name.

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { fmtDay } from "./ui";
 import { PhotoUpload } from "./PhotoUpload";
+import { StepPicture } from "./StepPicture";
 import { daysUntil } from "@/lib/colour";
 import type { PendingStep } from "@/lib/item-search";
 
@@ -32,9 +33,12 @@ export function PendingWork({ token, steps, all = false }: { token: string; step
           return (
             <li key={s.itemId} className="panel space-y-2">
               <Link href={`/m/${token}/orders/${s.orderId}`} className="block">
-                <p className="break-words text-xl font-medium leading-snug">
-                  {s.label}: {s.stepLabel}
-                </p>
+                <div className="flex items-center gap-3">
+                  <StepPicture label={s.stepLabel} />
+                  <p className="min-w-0 flex-1 break-words text-xl font-medium leading-snug">
+                    {s.label}: {s.stepLabel}
+                  </p>
+                </div>
                 <p className="text-base text-muted">
                   <bdi translate="no">{s.customerName}</bdi>
                   {s.designNumber ? (

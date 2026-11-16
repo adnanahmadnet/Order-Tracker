@@ -376,6 +376,19 @@ header label,
 .master-ui .btn {
   min-height: 3rem;
 }
+/* the buttons inside a step box are smaller than the page's main buttons */
+.master-ui .btn.step-btn {
+  min-height: 2.5rem;
+  padding: 0.35rem 1.1rem;
+  font-size: 0.95rem;
+}
+/* a small button: for a link like Download bill that sits beside a picture */
+.master-ui .btn.mini-btn {
+  min-height: 2.25rem;
+  padding: 0.2rem 0.85rem;
+  font-size: 0.875rem;
+  gap: 0.35rem;
+}
 .master-ui .input,
 .master-ui .select {
   min-height: 3rem;
@@ -386,18 +399,40 @@ header label,
 .urdu-font * {
   font-family: var(--font-urdu), "Noto Naskh Arabic", "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", system-ui, sans-serif;
 }
+/* Bengali on the master's screens: one plain Bengali face everywhere. */
+.bengali-font,
+.bengali-font * {
+  font-family: var(--font-bengali), "Noto Sans Bengali", "Nirmala UI", "Vrinda", system-ui, sans-serif;
+}
+/* Hindi on the master's screens: one plain Devanagari face everywhere. */
+.hindi-font,
+.hindi-font * {
+  font-family: var(--font-hindi), "Noto Sans Devanagari", "Nirmala UI", "Mangal", system-ui, sans-serif;
+}
 .urdu-font {
   line-height: 1.7;
 }
-/* Urdu letters are small at the usual small sizes: make the small text a little bigger. */
-.urdu-font .text-xs {
+.hindi-font {
+  line-height: 1.65;
+}
+.bengali-font {
+  line-height: 1.6;
+}
+/* Urdu and Bengali letters are small at the usual small sizes: make the small text a little bigger. */
+:is(.urdu-font, .bengali-font, .hindi-font) .text-xs {
   font-size: 0.9rem;
 }
-.urdu-font .text-sm {
+:is(.urdu-font, .bengali-font, .hindi-font) .text-sm {
   font-size: 1rem;
 }
-.urdu-font .text-base {
+
+:is(.urdu-font, .bengali-font, .hindi-font) .text-base {
   font-size: 1.1rem;
+}
+/* the step names under the progress bar sit side by side: keep them narrow */
+.bengali-font .track-label,
+.hindi-font .track-label {
+  font-size: 10px;
 }
 /* Arrows that point forward must point the other way when the page reads right to left. */
 [dir="rtl"] .rtl-flip {

@@ -362,12 +362,17 @@ export const designPhotos = sqliteTable("design_photos", {
   bytes: integer("bytes").notNull(),
 });
 
-// Urdu for text the office typed (item field names, notes, step names...), kept so each text is translated once.
-// The words that are fixed in the app are written by hand in src/lib/urdu.ts and are not stored here.
-export const translations = sqliteTable("translations", {
-  source: text("source").primaryKey(), // the English text, spaces tidied
-  ur: text("ur").notNull(),
-  createdAt: ts("created_at")
-    .notNull()
-    .$defaultFn(() => new Date()),
-});
+// The master's languages (Urdu, Bengali) for text the office typed (item field names, notes, step names...), kept so each text is
+// translated once per language. The words that are fixed in the app are written by hand in src/lib/urdu.ts and bengali.ts and are not stored here.
+export const textTranslations = sqliteTable(
+  "text_translations",
+  {
+    lang: text("lang").notNull(), // ur | bn
+    source: text("source").notNull(), // the English text, spaces tidied
+    translated: text("translated").notNull(),
+    createdAt: ts("created_at")
+      .notNull()
+      .$defaultFn(() => new Date()),
+  },
+  (t) => [primaryKey({ columns: [t.lang, t.source] })],
+);

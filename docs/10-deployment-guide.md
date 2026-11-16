@@ -74,7 +74,7 @@ Fill in these lines. Save with Ctrl+O, Enter, then leave with Ctrl+X.
 | `ADMIN_PASSWORD` | The password Anas types to sign in to the admin pages. Make it long. |
 | `SESSION_SECRET` | Random text of 32 or more characters. Make one with `openssl rand -hex 32` and paste it. Changing it later signs everyone out. |
 | `APP_URL` | The exact address people will type, with no slash at the end. For now use `http://<public address>:3002`. Step 6 changes it to the https address for you. |
-| `GOOGLE_TRANSLATE_API_KEY` | Optional. A Google Cloud Translation key. With it, the master's Urdu button also translates the text the office typed (field names, notes, step names). Without it, the fixed words are Urdu and the typed text stays English. |
+| `GOOGLE_TRANSLATE_API_KEY` | Optional. A Google Cloud Translation key. With it, the master's Urdu, Bengali and Hindi buttons also translate the text the office typed (field names, notes, step names). Without it, the fixed words are still in Urdu, Bengali and Hindi and the typed text stays English. |
 | `BACKUP_DIR_2` | Optional. A second place for the nightly backup, for example a USB drive: `/mnt/usb/OrderManagerBackups`. |
 
 Leave the other lines as they are. The file stays on this server only and is never sent to git, so write the passwords down somewhere safe.
@@ -162,7 +162,7 @@ Open `https://orders.yourdomain.com:3002/admin` (or the `http://` address if you
 On a new, empty server, do these in order:
 
 1. **Masters** (left menu). Press **Add master**. Give his name, a PIN code (numbers and letters, for example `1234A`) and his WhatsApp number with the country code and no plus sign, for example `923001234567`.
-2. **Your WhatsApp number**, at the top of the Masters page. Masters send their questions to this number. Press **Save**.
+2. **Your WhatsApp number**, at the top of the Masters page. It is where masters' questions used to go; the master screens no longer have a question button, so you can leave it empty.
 3. **Items** (left menu). Add a group (for example Men), then the items in it (Sherwani, Kurta). Build each item's form and choose its steps. Use the **Steps** page for steps that many items share.
 4. **Design Category** (left menu), if you use it. Add your design numbers with their pictures.
 

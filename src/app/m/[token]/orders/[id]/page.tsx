@@ -15,13 +15,11 @@ import { completeOrderAction, confirmOrderAction } from "../../../actions";
 import { HistoryList } from "@/components/HistoryList";
 import { orderHistory } from "@/lib/history";
 import { Icon } from "@/components/Icon";
+import { stepIconName } from "@/lib/step-icon";
 import { listOrderFiles } from "@/lib/order-files";
 import { cartCandidates } from "@/lib/shipping";
 import { remakeCount } from "@/lib/remake";
 import { itemStatesOfOrder, itemStatesSummary } from "@/lib/item-search";
-import { officeWhatsapp } from "@/lib/settings";
-import { messages, waLink } from "@/lib/whatsapp";
-import { orderInfo } from "@/lib/order-info";
 
 export default async function MasterOrder({
   params,
@@ -56,8 +54,6 @@ export default async function MasterOrder({
   const daysLeft = Math.round((new Date(dy, dm - 1, dd).getTime() - new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()) / 86_400_000);
 
   const orderPdfs = listOrderFiles(order.id);
-  // a question to the office: WhatsApp opens with the order named, the items, the due date and a link to the order
-  const ask = waLink(officeWhatsapp(), messages.question({ masterName: master.name, orderId: order.id, orderNumber: order.orderNumber, customer: order.customerName, info: orderInfo(order.id) }));
 
   return (
     <div className="mx-auto w-full max-w-3xl space-y-4">
@@ -70,27 +66,23 @@ export default async function MasterOrder({
             <TitleIcon name="note" />
             <h1 className="page-title normal-case">Order #{order.orderNumber}</h1>
           </div>
-          <span
-            className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-base font-medium ${
-              order.status === "active"
-                ? "border-ok/30 bg-ok-soft text-ok"
-                : order.status === "completed"
-                  ? "border-accent/30 bg-accent-soft text-accent-deep"
-                  : "border-bad/30 bg-bad-soft text-bad"
-            }`}
-          >
-            <Icon name="check" className="h-4 w-4" />
-            {order.status === "active" ? "In Progress" : order.status === "completed" ? "Completed" : "Cancelled"}
-          </span>
+          {order.status !== "active" && (
+            <span
+              className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-base font-medium ${
+                order.status === "completed" ? "border-accent/30 bg-accent-soft text-accent-deep" : "border-bad/30 bg-bad-soft text-bad"
+              }`}
+            >
+              <Icon name="check" className="h-4 w-4" />
+              {order.status === "completed" ? "Completed" : "Cancelled"}
+            </span>
+          )}
         </div>
 
         <dl className="space-y-1.5 border-t border-rule pt-4 text-xl">
           <div className="flex items-baseline justify-between gap-4">
             <dt className="text-muted">Customer</dt>
             <dd className="text-end font-medium">
-              <a href={ask} target="_blank" rel="noreferrer" className="link" title="Ask the office a question about this order">
-                <bdi translate="no">{order.customerName}</bdi>
-              </a>
+              <bdi translate="no">{order.customerName}</bdi>
             </dd>
           </div>
           {design && (
@@ -105,17 +97,13 @@ export default async function MasterOrder({
           </div>
         </dl>
 
-        <a href={ask} target="_blank" rel="noreferrer" className="btn btn-quiet inline-flex min-h-12 items-center gap-2 text-lg">
-          Ask the office a question
-        </a>
-
         {order.status === "active" && (
           <span
-            className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-base font-medium ${
+            className={`inline-flex items-center gap-2.5 rounded-full border px-5 py-2.5 text-2xl font-medium ${
               daysLeft <= 0 ? "border-bad/30 bg-bad-soft text-bad" : daysLeft <= 3 ? "border-ok/30 bg-ok-soft text-ok" : "border-cloth/30 bg-cool-soft text-cloth"
             }`}
           >
-            <Icon name="clock" className="h-4 w-4" />
+            <Icon name="clock" className="h-7 w-7" />
             {daysLeft < 0 ? `Late by ${-daysLeft} ${daysLeft === -1 ? "day" : "days"}` : daysLeft === 0 ? "Due today" : `${daysLeft} ${daysLeft === 1 ? "day" : "days"} left`}
           </span>
         )}
@@ -134,7 +122,8 @@ export default async function MasterOrder({
                       Finished, in your cart
                     </Link>
                   )}
-                  {it.state === "making" && <span className="rounded-full bg-[#FEF3C7] px-3 py-0.5 text-base font-medium text-[#92400E]">To make{it.stage ? `: ${it.stage}` : ""}</span>}
+                  {it.state === "making" && <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FEF3C7] px-3 py-0.5 text-base font-medium text-[#92400E]">{it.stage && stepIconName(it.stage) ? <Icon name={stepIconName(it.stage)!} className="h-6 w-6" /> : null}
+                    To make{it.stage ? `: ${it.stage}` : ""}</span>}
                 </li>
               ))}
             </ul>
@@ -202,7 +191,9 @@ export default async function MasterOrder({
           <form action={confirmOrderAction}>
             <input type="hidden" name="token" value={token} />
             <input type="hidden" name="orderId" value={order.id} />
-            <button className={`${btnPrimary} w-full`}>I have seen this order</button>
+            <button className={`${btnPrimary} w-full gap-2`}>
+              <Icon name="eye" className="h-6 w-6" /> I have seen this order
+            </button>
           </form>
         </section>
       )}
@@ -306,7 +297,9 @@ export default async function MasterOrder({
           <form action={completeOrderAction}>
             <input type="hidden" name="token" value={token} />
             <input type="hidden" name="orderId" value={order.id} />
-            <button className={`${btnPrimary} w-full`}>Mark complete</button>
+            <button className={`${btnPrimary} w-full gap-2`}>
+              <Icon name="check" className="h-6 w-6" /> Mark complete
+            </button>
           </form>
         ) : (
           <p className="alert text-lg">

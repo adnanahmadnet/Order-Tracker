@@ -229,5 +229,5 @@ The accountant's invoice and the handover to the shipping company are handled by
 - `FieldDef.slip` (14 Nov 2026): "On tailor slip", true / false; missing = on when under a Measurements heading. Stored only when it differs from that default. No migration.
 - `templates.print_layout` (JSON `{ slip: tailor|karigar|both|none, karigarRows: string[][], slipShow?: { design?, colour?, count? } }` of field keys; null = tailor slip only; migration 0017). It is copied into `order_items.snapshot.print`.
 
-## translations (16 Nov 2026, migration 0018)
-Urdu for text the office typed, shown on the master's screens. `source` (the English text, spaces tidied, primary key), `ur`, `created_at`. Each text is translated once and kept. The fixed words of the app are not here; they are written by hand in `src/lib/urdu.ts`.
+## text_translations (17 Nov 2026, migration 0019; it replaces `translations` from 0018)
+The master's Urdu and Bengali for text the office typed. `lang` (ur, bn or hi), `source` (the English text, spaces tidied), `translated`, `created_at`; primary key (`lang`, `source`). Each text is translated once per language and kept. The fixed words of the app are not here; they are written by hand in `src/lib/urdu.ts`, `src/lib/bengali.ts` and `src/lib/hindi.ts`.

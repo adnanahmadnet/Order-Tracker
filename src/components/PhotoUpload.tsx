@@ -3,6 +3,7 @@
 import imageCompression from "browser-image-compression";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
+import { Icon } from "./Icon";
 import { btnPrimary, btnSecondary } from "./ui";
 
 /**
@@ -16,6 +17,7 @@ export function PhotoUpload({
   camera = false,
   quiet = false,
   multiple = false,
+  iconOnly = false,
 }: {
   endpoint: string;
   fields: Record<string, string>;
@@ -23,6 +25,7 @@ export function PhotoUpload({
   camera?: boolean;
   quiet?: boolean; // a secondary-looking button, when another button on the page is the main action
   multiple?: boolean; // choose several pictures at once; they are sent one after another
+  iconOnly?: boolean; // a small round plus button (the label is for screen readers), for a row of a list
 }) {
   const router = useRouter();
   const input = useRef<HTMLInputElement>(null);
@@ -56,6 +59,25 @@ export function PhotoUpload({
     } finally {
       if (input.current) input.current.value = "";
     }
+  }
+
+  if (iconOnly) {
+    return (
+      <>
+        <input ref={input} type="file" accept="image/*" {...(camera ? { capture: "environment" as const } : {})} onChange={onPick} className="hidden" />
+        <button
+          type="button"
+          disabled={state === "working"}
+          onClick={() => input.current?.click()}
+          aria-label={label}
+          title={label}
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-full border-[1.5px] border-ink text-ink hover:bg-paper-3 disabled:opacity-60"
+        >
+          <Icon name={state === "working" ? "clock" : "plus"} className="h-6 w-6" />
+        </button>
+        {state === "error" && <p className="basis-full text-base font-medium text-thread">{message}</p>}
+      </>
+    );
   }
 
   return (

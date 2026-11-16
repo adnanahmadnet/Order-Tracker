@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray, isNull } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNull, or } from "drizzle-orm";
 import { db } from "@/db";
 import { masters, orderItems, orders, photos, shipmentItems, shipments } from "@/db/schema";
 import { itemStageViews } from "./stages";
@@ -310,6 +310,38 @@ export function submitShipment(masterId: number, shipmentId: number): SubmitResu
     }
     return { ok: true, orderCompleted } as const;
   });
+}
+
+// ---------------------------------------------------------------- the master's history
+
+/**
+ * Everything a master has sent (submitted shipments), newest first, with the items and the bill and packed-items photos.
+ * It never goes away when the orders are completed or archived: he refers back to his bills.
+ */
+export function masterSentShipments(masterId: number): ShipmentView[] {
+  return db
+    .select({ id: shipments.id })
+    .from(shipments)
+    .where(and(eq(shipments.masterId, masterId), eq(shipments.status, "submitted")))
+    .orderBy(desc(shipments.submittedAt), desc(shipments.id))
+    .all()
+    .map((r) => shipmentView(r.id)!);
+}
+
+/** A bill or packed-items photo of one of this master's SENT shipments (open even when its order is completed or archived), else null. */
+export function shipmentPhotoForMaster(masterId: number, photoId: number) {
+  const s = db
+    .select({ id: shipments.id })
+    .from(shipments)
+    .where(
+      and(
+        eq(shipments.masterId, masterId),
+        eq(shipments.status, "submitted"),
+        or(eq(shipments.billPhotoId, photoId), eq(shipments.packagePhotoId, photoId)),
+      ),
+    )
+    .get();
+  return s ? (db.select().from(photos).where(eq(photos.id, photoId)).get() ?? null) : null;
 }
 
 // ---------------------------------------------------------------- admin

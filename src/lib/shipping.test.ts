@@ -109,6 +109,42 @@ describe("shipping", () => {
     expect(sh.shipmentView(sid)!.status).toBe("submitted");
   });
 
+  it("the master keeps his history: sent shipments with their bills, newest first, even after the orders are completed and archived", () => {
+    const first = setup(1);
+    const master = first.master;
+    const second = setup(2, master);
+    const stranger = m.createMaster({ name: "Stranger", pin: "9" });
+
+    const s1 = sh.startShipment(master, first.orderId)!;
+    sh.saveShipmentItems(master, s1, first.itemIds, first.itemIds);
+    const bill1 = sh.attachShipmentPhoto({ id: s1, orderId: first.orderId }, "bill", file);
+    expect(sh.submitShipment(master, s1)).toMatchObject({ ok: true });
+
+    // a cart that is not sent yet is not history, and its bill is not served as one
+    const s2 = sh.startShipment(master, second.orderId)!;
+    sh.saveShipmentItems(master, s2, second.itemIds, second.itemIds);
+    const bill2 = sh.attachShipmentPhoto({ id: s2, orderId: second.orderId }, "bill", file);
+    expect(sh.masterSentShipments(master).map((x) => x.id)).toEqual([s1]);
+    expect(sh.shipmentPhotoForMaster(master, bill2)).toBeNull();
+
+    expect(sh.submitShipment(master, s2)).toMatchObject({ ok: true });
+    const history = sh.masterSentShipments(master);
+    expect(history.map((x) => x.id)).toEqual([s2, s1]); // newest first
+    expect(history[0].items).toHaveLength(2);
+    expect(history[1]).toMatchObject({ billPhotoId: bill1 });
+
+    // both orders are completed, then archived: the bill can still be opened, the order's own photos cannot
+    expect(o.setStatus(first.orderId, "archived")).toBe(true);
+    expect(s.photoForMaster(master, bill1)).toBeNull();
+    expect(sh.shipmentPhotoForMaster(master, bill1)?.id).toBe(bill1);
+    expect(sh.masterSentShipments(master)).toHaveLength(2);
+
+    // nobody else sees it
+    expect(sh.masterSentShipments(stranger)).toEqual([]);
+    expect(sh.shipmentPhotoForMaster(stranger, bill1)).toBeNull();
+    expect(sh.shipmentPhotoForMaster(master, 999999)).toBeNull();
+  });
+
   it("alerts Admin about new shipments until they are seen; bills are served only to the owning master", () => {
     const { master, orderId, itemIds } = setup(1);
     const before = sh.unseenShipmentCount();

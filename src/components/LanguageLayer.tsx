@@ -2,14 +2,15 @@
 
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useSyncExternalStore } from "react";
-import { cleanSource, isTranslatable, urduFor } from "@/lib/urdu";
+import { type Lang, cleanSource, isTranslatable } from "@/lib/i18n";
+import { LANGS, handWritten } from "@/lib/langs";
 
 /**
- * The English / اردو button of the master's screens, and the Urdu itself.
- * When Urdu is on, every text inside the page is swapped for Urdu: first from the hand-written list (urdu.ts), then, for text
- * the office typed, from the translation route (saved on the server). The screen turns right-to-left. Anything inside an element
- * with translate="no" (customer names, design numbers) is left as it is. The choice is remembered on that phone.
- * The printed sheet (/print) is never translated. Without Urdu nothing here runs.
+ * The English / اردو / বাংলা / हिन्दी button of the master's screens, and the translation itself.
+ * When Urdu, Bengali or Hindi is on, every text inside the page is swapped: first from the hand-written list (urdu.ts, bengali.ts, hindi.ts), then,
+ * for text the office typed, from the translation route (saved on the server). Urdu turns the screen right-to-left.
+ * Anything inside an element with translate="no" (customer names, design numbers) is left as it is. The choice is remembered on
+ * that phone. The printed sheet (/print) is never translated. In English nothing here runs.
  */
 const KEY = "master-lang";
 const ATTRS = ["placeholder", "title", "aria-label", "alt"] as const;
@@ -34,15 +35,16 @@ function subscribeLang(cb: () => void) {
   };
 }
 
-function readLang(): "en" | "ur" {
+function readLang(): Lang {
   try {
-    return localStorage.getItem(KEY) === "ur" ? "ur" : "en";
+    const v = localStorage.getItem(KEY);
+    return v === "ur" || v === "bn" || v === "hi" ? v : "en";
   } catch {
     return "en";
   }
 }
 
-type AttrRec = { en: string; ur: string };
+type AttrRec = { en: string; tr: string };
 
 /** Back to English: put every changed text and attribute back as it was. */
 function putBack(nodes: Set<Text>, original: WeakMap<Text, string>, shown: WeakMap<Text, string>, attrs: Map<Element, Map<string, AttrRec>>) {
@@ -51,17 +53,17 @@ function putBack(nodes: Set<Text>, original: WeakMap<Text, string>, shown: WeakM
     if (node.isConnected && en !== undefined && node.data === shown.get(node)) node.data = en;
   }
   nodes.clear();
-  for (const [e, map] of attrs) for (const [a, rec] of map) if (e.isConnected && e.getAttribute(a) === rec.ur) e.setAttribute(a, rec.en);
+  for (const [e, map] of attrs) for (const [a, rec] of map) if (e.isConnected && e.getAttribute(a) === rec.tr) e.setAttribute(a, rec.en);
   attrs.clear();
 }
 
-export default function UrduLayer({ token, children }: { token: string; children: React.ReactNode }) {
+export default function LanguageLayer({ token, children }: { token: string; children: React.ReactNode }) {
   const pathname = usePathname();
   const printing = pathname.endsWith("/print");
-  const lang = useSyncExternalStore(subscribeLang, readLang, () => "en" as const);
+  const lang = useSyncExternalStore(subscribeLang, readLang, () => "en" as Lang);
   const root = useRef<HTMLDivElement>(null);
 
-  const choose = (l: "en" | "ur") => {
+  const choose = (l: Lang) => {
     try {
       localStorage.setItem(KEY, l);
     } catch {
@@ -70,53 +72,54 @@ export default function UrduLayer({ token, children }: { token: string; children
     window.dispatchEvent(new Event(LANG_EVENT));
   };
 
-  const on = lang === "ur" && !printing;
+  const on = lang !== "en" && !printing;
+  const info = LANGS.find((l) => l.code === lang)!;
 
   const touched = useRef(new Set<Text>());
   const touchedAttrs = useRef(new Map<Element, Map<string, AttrRec>>());
   const original = useRef(new WeakMap<Text, string>());
   const shown = useRef(new WeakMap<Text, string>());
   const waiting = useRef(new Map<string, Set<Text | { el: Element; attr: string }>>());
-  const known = useRef(new Map<string, string>()); // texts already answered by the server this visit
-  const tried = useRef(new Set<string>()); // texts the server could not translate: do not ask again
+  const known = useRef(new Map<string, string>()); // texts already answered by the server this visit, as "lang|text"
+  const tried = useRef(new Set<string>()); // texts the server could not translate: do not ask again, as "lang|text"
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const setText = useCallback((node: Text, ur: string) => {
-    shown.current.set(node, ur);
-    node.data = ur;
+  const setText = useCallback((node: Text, tr: string) => {
+    shown.current.set(node, tr);
+    node.data = tr;
   }, []);
 
   const ask = useCallback(
-    (token_: string) => {
+    (token_: string, lang_: Lang) => {
       const texts = [...waiting.current.keys()];
       if (texts.length === 0) return;
       const batch = new Map(waiting.current);
       waiting.current.clear();
-      fetch(`/api/m/${token_}/translate`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ texts }) })
+      fetch(`/api/m/${token_}/translate`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ texts, lang: lang_ }) })
         .then((r) => (r.ok ? r.json() : { ur: {} }))
         .then((j: { ur?: Record<string, string> }) => {
           for (const [src, targets] of batch) {
-            const ur = j.ur?.[src];
-            if (!ur) {
-              tried.current.add(src);
+            const tr = j.ur?.[src];
+            if (!tr) {
+              tried.current.add(`${lang_}|${src}`);
               continue;
             }
-            known.current.set(src, ur);
+            known.current.set(`${lang_}|${src}`, tr);
             for (const t of targets) {
               if (t instanceof Text) {
-                if (t.isConnected && t.data === original.current.get(t)) setText(t, t.data.replace(t.data.trim(), ur));
+                if (t.isConnected && t.data === original.current.get(t)) setText(t, t.data.replace(t.data.trim(), tr));
               } else if (t.el.isConnected) {
                 const rec = touchedAttrs.current.get(t.el)?.get(t.attr);
                 if (rec && t.el.getAttribute(t.attr) === rec.en) {
-                  rec.ur = ur;
-                  t.el.setAttribute(t.attr, ur);
+                  rec.tr = tr;
+                  t.el.setAttribute(t.attr, tr);
                 }
               }
             }
           }
         })
         .catch(() => {
-          for (const k of batch.keys()) tried.current.add(k);
+          for (const k of batch.keys()) tried.current.add(`${lang_}|${k}`);
         });
     },
     [setText],
@@ -128,35 +131,35 @@ export default function UrduLayer({ token, children }: { token: string; children
       set.add(target);
       waiting.current.set(src, set);
       if (timer.current) clearTimeout(timer.current);
-      timer.current = setTimeout(() => ask(token), 200);
+      timer.current = setTimeout(() => ask(token, lang), 200);
     },
-    [ask, token],
+    [ask, token, lang],
   );
 
   const doText = useCallback(
     (node: Text) => {
-      if (shown.current.get(node) === node.data) return; // our own Urdu
+      if (shown.current.get(node) === node.data) return; // our own translation
       if (skipped(node.parentElement)) return;
       const en = node.data;
       if (!isTranslatable(en)) return;
       original.current.set(node, en);
-      const hand = urduFor(en);
+      const hand = handWritten(lang, en);
       if (hand) {
         touched.current.add(node);
         setText(node, hand);
         return;
       }
       const src = cleanSource(en);
-      const cached = known.current.get(src);
+      const cached = known.current.get(`${lang}|${src}`);
       if (cached) {
         touched.current.add(node);
         setText(node, en.replace(en.trim(), cached));
-      } else if (!tried.current.has(src)) {
+      } else if (!tried.current.has(`${lang}|${src}`)) {
         touched.current.add(node);
         queue(src, node);
       }
     },
-    [queue, setText],
+    [queue, setText, lang],
   );
 
   const doAttrs = useCallback(
@@ -166,18 +169,17 @@ export default function UrduLayer({ token, children }: { token: string; children
         const en = el.getAttribute(attr);
         if (!en || !isTranslatable(en)) continue;
         const rec = touchedAttrs.current.get(el)?.get(attr);
-        if (rec && rec.ur === en) continue; // our own Urdu
-        const hand = urduFor(en);
+        if (rec && rec.tr === en) continue; // our own translation
         const src = cleanSource(en);
-        const ur = hand ?? known.current.get(src) ?? null;
+        const tr = handWritten(lang, en) ?? known.current.get(`${lang}|${src}`) ?? null;
         const m = touchedAttrs.current.get(el) ?? new Map();
-        m.set(attr, { en, ur: ur ?? en });
+        m.set(attr, { en, tr: tr ?? en });
         touchedAttrs.current.set(el, m);
-        if (ur) el.setAttribute(attr, ur);
-        else if (!tried.current.has(src)) queue(src, { el, attr });
+        if (tr) el.setAttribute(attr, tr);
+        else if (!tried.current.has(`${lang}|${src}`)) queue(src, { el, attr });
       }
     },
-    [queue],
+    [queue, lang],
   );
 
   const walk = useCallback(
@@ -195,11 +197,10 @@ export default function UrduLayer({ token, children }: { token: string; children
   useEffect(() => {
     const el = root.current;
     if (!el) return;
-    if (!on) {
-      putBack(touched.current, original.current, shown.current, touchedAttrs.current);
-      waiting.current.clear();
-      return;
-    }
+    // English first (also when going from one language straight to the other), then the chosen language
+    putBack(touched.current, original.current, shown.current, touchedAttrs.current);
+    waiting.current.clear();
+    if (!on) return;
     walk(el);
     const obs = new MutationObserver((muts) => {
       for (const m of muts) {
@@ -217,16 +218,22 @@ export default function UrduLayer({ token, children }: { token: string; children
       {!printing && (
         <div className="mb-3 flex justify-end print:hidden" translate="no">
           <div role="group" aria-label="Language" className="inline-flex overflow-hidden rounded-full border border-rule-2 bg-paper-2 text-base shadow-sm">
-            <button type="button" onClick={() => choose("en")} aria-pressed={lang === "en"} className={`min-h-11 px-4 ${lang === "en" ? "bg-ink font-medium text-white" : "text-ink"}`}>
-              English
-            </button>
-            <button type="button" onClick={() => choose("ur")} aria-pressed={lang === "ur"} lang="ur" className={`urdu-font min-h-11 px-4 ${lang === "ur" ? "bg-ink font-medium text-white" : "text-ink"}`}>
-              اردو
-            </button>
+            {LANGS.map((l) => (
+              <button
+                key={l.code}
+                type="button"
+                onClick={() => choose(l.code)}
+                aria-pressed={lang === l.code}
+                lang={l.code}
+                className={`${l.font} min-h-11 px-4 ${lang === l.code ? "bg-ink font-medium text-white" : "text-ink"}`}
+              >
+                {l.label}
+              </button>
+            ))}
           </div>
         </div>
       )}
-      <div ref={root} dir={on ? "rtl" : undefined} lang={on ? "ur" : undefined} className={on ? "urdu-font" : undefined}>
+      <div ref={root} dir={on ? info.dir : undefined} lang={on ? lang : undefined} className={on ? info.font : undefined}>
         {children}
       </div>
     </>

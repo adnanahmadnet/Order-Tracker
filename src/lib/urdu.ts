@@ -1,11 +1,9 @@
-// English -> Urdu for the master's screens. Pure functions, used by the browser (UrduLayer) and by the translate route.
+// English -> Urdu for the master's screens (the engine is in i18n.ts, Bengali is in bengali.ts).
 // The words on the master's screens are written here by hand, so they are exact and work without internet.
 // Anything not listed (for example text the office typed) goes to the translation service and is saved (see translate.ts).
 // A number inside a sentence is written as {n}: "3 items" is looked up as "{n} items".
 
 export const URDU: Record<string, string> = {
-  "Ask the office a question": "دفتر سے سوال پوچھیں",
-  "Ask the office a question about this order": "اس آرڈر کے بارے میں دفتر سے سوال پوچھیں",
   "Add another PDF": "ایک اور پی ڈی ایف شامل کریں",
   "Add at least one photo of your work to finish this step.": "یہ قدم مکمل کرنے کے لیے اپنے کام کی کم از کم ایک تصویر لگائیں۔",
   "Add image": "تصویر شامل کریں",
@@ -160,7 +158,7 @@ export const URDU: Record<string, string> = {
   "Upload failed. Please try again.": "اپ لوڈ نہیں ہوا۔ دوبارہ کوشش کریں۔",
   View: "دیکھیں",
   "Waiting for approval": "منظوری کا انتظار",
-  "What are you sending?": "آپ کیا بھیج رہے ہیں؟",
+  "Pending shipment": "باقی شپمنٹ",
   "Write a note about this step": "اس قدم کے بارے میں نوٹ لکھیں",
   "Write something in the note first.": "پہلے نوٹ میں کچھ لکھیں۔",
   "Wrong code. Try again.": "غلط کوڈ۔ دوبارہ کوشش کریں۔",
@@ -189,6 +187,10 @@ export const URDU: Record<string, string> = {
   "Steps {n} of {n}": "{2} میں سے {1} قدم",
   "{n} of {n} field filled": "{2} میں سے {1} خانہ بھرا ہے",
   "{n} of {n} fields filled": "{2} میں سے {1} خانے بھرے ہیں",
+  "No bill photo": "بل کی تصویر نہیں",
+  "Sent back": "واپس بھیجا گیا",
+  "No sent orders yet.": "ابھی کوئی بھیجا ہوا آرڈر نہیں۔",
+  "Sent orders and their bills are kept here.": "بھیجے ہوئے آرڈر اور ان کے بل یہاں رہتے ہیں۔",
   "The office": "دفتر",
   "(the office fills this in)": "(دفتر یہ بھرتا ہے)",
   // measurement and form words the office usually types (the office can type any other word: those go to the translation service)
@@ -269,7 +271,7 @@ export const URDU: Record<string, string> = {
   Hello: "السلام علیکم",
   "Design:": "ڈیزائن:",
   "- Design:": "- ڈیزائن:",
-  "Order #": "آرڈر نمبر",
+  "Order #": "آرڈر نمبر ",
   Due: "آخری تاریخ",
   "Due {d}": "آخری تاریخ {d}",
   "{n} late,": "{n} لیٹ،",
@@ -319,7 +321,9 @@ export const URDU: Record<string, string> = {
   Shoes: "جوتے",
 };
 
-const LOWER: Record<string, string> = Object.fromEntries(Object.entries(URDU).map(([k, v]) => [k.toLowerCase(), v]));
+import { type Pack, cleanSource, isTranslatable, makeTranslator } from "./i18n";
+
+export { cleanSource, isTranslatable };
 
 export const MONTHS: Record<string, string> = {
   January: "جنوری",
@@ -336,105 +340,22 @@ export const MONTHS: Record<string, string> = {
   December: "دسمبر",
 };
 
-const SHORT_MONTHS: Record<string, string> = Object.fromEntries(Object.entries(MONTHS).map(([en, ur]) => [en.slice(0, 3), ur]));
-
-const DATE_ANY = new RegExp("(\\d{1,2}) (" + [...Object.keys(MONTHS), ...Object.keys(SHORT_MONTHS)].join("|") + ")(?: (\\d{4}))?", "g");
-
-function dateUr(day: string, month: string, year?: string): string {
-  return `${day} ${MONTHS[month] ?? SHORT_MONTHS[month]}${year ? ` ${year}` : ""}`;
-}
-
-/** Texts that never go to translation: numbers, codes, names marked by the page, nothing with two letters in a row. */
-export function isTranslatable(s: string): boolean {
-  const t = s.trim();
-  if (t.length < 2 || t.length > 500) return false;
-  if (!/[A-Za-z]{2}/.test(t)) return false;
-  if (/^https?:\/\//i.test(t) || /^[\w.+-]+@[\w-]+\.[\w.]+$/.test(t)) return false;
-  return true;
-}
-
-/** The text with every number replaced by {n}, and the numbers in order. */
-export function templateOf(s: string): { key: string; nums: string[] } {
-  const nums = s.match(/\d+/g) ?? [];
-  return { key: s.replace(/\d+/g, "{n}"), nums };
-}
-
-export function fillNumbers(tpl: string, nums: string[]): string {
-  // {n} takes the next number in order; {1}, {2}... take that number (the Urdu word order can differ from the English)
-  let i = 0;
-  return tpl.replace(/\{(n|\d)\}/g, (_m, k: string) => (k === "n" ? nums[i++] : nums[Number(k) - 1]) ?? "");
-}
+const urduPack: Pack = {
+  dict: URDU,
+  months: MONTHS,
+  joiner: "، ",
+  design: (dash, rest) => `${dash}ڈیزائن: ${rest}`,
+  history: {
+    confirmed: (who) => `${who} نے تصدیق کی کہ آرڈر دیکھ لیا`,
+    remade: (who, item) => `${who} نے ${item} دوبارہ بنانے کے لیے واپس بھیجا`,
+    sent: (who, item) => `${who} نے ${item} بھیج دیا`,
+    done: (who, stage, of) => `${who} نے ${stage} مکمل کیا${of ? ` (${of})` : ""}`,
+    note: (who, stage, of) => `${who} نے ${stage} پر نوٹ لکھا${of ? ` (${of})` : ""}`,
+    instruction: (who, stage, of) => `${who} نے ${stage} کے لیے ہدایت دی${of ? ` (${of})` : ""}`,
+    image: (who, stage, of) => `${who} نے ${stage} میں تصویر لگائی${of ? ` (${of})` : ""}`,
+  },
+};
 
 /** The Urdu for a text from the hand-written list, or null when it is not there. Spaces around it are kept. */
-export function urduFor(text: string): string | null {
-  const lead = /^\s*/.exec(text)![0];
-  const trail = /\s*$/.exec(text)![0];
-  const core = text.trim().replace(/\s+/g, " ");
-  if (!core) return null;
-  const hit = urduCore(core);
-  return hit ? lead + hit + trail : null;
-}
-
-const MONTH_YEAR = new RegExp("^(" + Object.keys(MONTHS).join("|") + ") (\\d{4})$");
-
-function urduCore(core: string): string | null {
-  // "November 2026"
-  const my = MONTH_YEAR.exec(core);
-  if (my) return `${MONTHS[my[1]]} ${my[2]}`;
-  // dates ("12 November", "12 November 2026") are set aside as {d}, then numbers as {n}
-  const dates: string[] = [];
-  const noDates = core.replace(DATE_ANY, (_m, d: string, mo: string, y?: string) => {
-    dates.push(dateUr(d, mo, y));
-    return "{d}";
-  });
-  if (noDates === "{d}") return dates[0];
-  const nums = noDates.match(/\d+/g) ?? [];
-  const key = noDates.replace(/\d+/g, "{n}");
-  const hit = URDU[key] ?? URDU[core] ?? LOWER[key.toLowerCase()];
-  if (hit) {
-    let j = 0;
-    return fillNumbers(hit, nums).replace(/\{d\}/g, () => dates[j++] ?? "");
-  }
-  // "Design: ABC" keeps the number as it is
-  const design = /^(- )?Design: (.+)$/.exec(core);
-  if (design) return `${design[1] ?? ""}ڈیزائن: ${design[2]}`;
-  // the history lines: "Naseem finished Cutting (Sherwani)" - the names stay as they are, the words around them are Urdu
-  const line = historyLine(core);
-  if (line) return line;
-  // ": Cutting" after "To make"
-  const colon = /^: (.+)$/.exec(core);
-  if (colon) return `: ${urduCore(colon[1]) ?? colon[1]}`;
-  // a label with a colon: "Chest:"
-  const label = /^(.+):$/.exec(core);
-  if (label) {
-    const inner = urduCore(label[1]);
-    if (inner) return `${inner}:`;
-  }
-  // "Sherwani, Pants": every part must be known
-  if (core.includes(", ")) {
-    const parts = core.split(", ").map((p) => urduCore(p));
-    if (parts.every((p) => p)) return parts.join("، ");
-  }
-  return null;
-}
-
-const part = (x: string) => urduCore(x) ?? x;
-const withItem = (of: string | undefined) => (of ? ` (${part(of)})` : "");
-
-/** One line of the order history ("Naseem finished Cutting (Sherwani)", see describeEvent in history.ts). */
-function historyLine(s: string): string | null {
-  let m: RegExpExecArray | null;
-  if ((m = /^(The office|The master|[A-Z]\S+(?: [A-Z]\S+)?) confirmed they have seen the order$/.exec(s))) return `${part(m[1])} نے تصدیق کی کہ آرڈر دیکھ لیا`;
-  if ((m = /^(The office|The master|[A-Z]\S+(?: [A-Z]\S+)?) sent (.+) back for a remake$/.exec(s))) return `${part(m[1])} نے ${part(m[2])} دوبارہ بنانے کے لیے واپس بھیجا`;
-  if ((m = /^(The office|The master|[A-Z]\S+(?: [A-Z]\S+)?) sent (.+)$/.exec(s))) return `${part(m[1])} نے ${part(m[2])} بھیج دیا`;
-  if ((m = /^(The office|The master|[A-Z]\S+(?: [A-Z]\S+)?) finished (.+?)(?: \((.+)\))?$/.exec(s))) return `${part(m[1])} نے ${part(m[2])} مکمل کیا${withItem(m[3])}`;
-  if ((m = /^(The office|The master|[A-Z]\S+(?: [A-Z]\S+)?) added a note on (.+?)(?: \((.+)\))?$/.exec(s))) return `${part(m[1])} نے ${part(m[2])} پر نوٹ لکھا${withItem(m[3])}`;
-  if ((m = /^(The office|The master|[A-Z]\S+(?: [A-Z]\S+)?) left an instruction for (.+?)(?: \((.+)\))?$/.exec(s))) return `${part(m[1])} نے ${part(m[2])} کے لیے ہدایت دی${withItem(m[3])}`;
-  if ((m = /^(The office|The master|[A-Z]\S+(?: [A-Z]\S+)?) added an image to (.+?)(?: \((.+)\))?$/.exec(s))) return `${part(m[1])} نے ${part(m[2])} میں تصویر لگائی${withItem(m[3])}`;
-  return null;
-}
-
-/** One text the way it is sent to the service and saved: spaces tidied. */
-export function cleanSource(text: string): string {
-  return text.trim().replace(/\s+/g, " ");
-}
+export const urduFor = makeTranslator(urduPack);
+export { urduPack };

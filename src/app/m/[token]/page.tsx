@@ -9,6 +9,9 @@ import { masterDashboard } from "@/lib/orders";
 import { itemStatesOfOrder, itemStatesSummary, pendingWork } from "@/lib/item-search";
 import { cartCandidates } from "@/lib/shipping";
 
+/** The Finished tile is hidden for now (client, 17 Nov 2026: "not needed yet"). The page /m/[token]/finished still exists. */
+const SHOW_FINISHED = false;
+
 export default async function MasterHome({
   params,
   searchParams,
@@ -47,27 +50,29 @@ export default async function MasterHome({
       </header>
 
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 md:max-w-2xl md:gap-3">
-        <Link href={`/m/${token}/items`} className="flex min-h-24 flex-col justify-between gap-2 rounded-2xl border border-rule-2 bg-paper-2 p-3 text-lg font-medium leading-tight hover:bg-paper-3">
-          <Icon name="box" className="h-6 w-6 text-muted" />
-          Items
+        <Link href={`/m/${token}/items`} className="relative flex min-h-28 flex-col items-center justify-center gap-1 rounded-2xl border border-rule-2 bg-paper-2 p-3 text-center text-muted hover:bg-paper-3">
+          <Icon name="hanger" className="h-12 w-12 text-accent-deep" />
+          <span className="text-sm font-medium leading-tight text-ink-2">Items</span>
         </Link>
-        <Link href={`/m/${token}/pending`} className="flex min-h-24 flex-col justify-between gap-2 rounded-2xl border border-rule-2 bg-paper-2 p-3 text-lg font-medium leading-tight hover:bg-paper-3">
-          <span className="flex items-center justify-between">
-            <Icon name="clock" className="h-6 w-6 text-muted" />
-            {pending.length > 0 && <span className="rounded-full bg-accent px-2.5 py-0.5 text-sm text-white">{pending.length}</span>}
-          </span>
-          My pending work
+        <Link href={`/m/${token}/pending`} className="relative flex min-h-28 flex-col items-center justify-center gap-1 rounded-2xl border border-rule-2 bg-paper-2 p-3 text-center text-muted hover:bg-paper-3">
+          <Icon name="clock" className="h-12 w-12 text-accent-deep" />
+          {pending.length > 0 && <span className="absolute end-2 top-2 rounded-full bg-accent px-2.5 py-0.5 text-base text-white">{pending.length}</span>}
+          <span className="text-sm font-medium leading-tight text-ink-2">My pending work</span>
         </Link>
-        <Link href={`/m/${token}/cart`} className="flex min-h-24 flex-col justify-between gap-2 rounded-2xl border border-rule-2 bg-paper-2 p-3 text-lg font-medium leading-tight hover:bg-paper-3">
-          <span className="flex items-center justify-between">
-            <Icon name="shipments" className="h-6 w-6 text-muted" />
-            {ready > 0 && <span className="rounded-full bg-accent px-2.5 py-0.5 text-sm text-white">{ready}</span>}
-          </span>
-          Cart
+        <Link href={`/m/${token}/cart`} className="relative flex min-h-28 flex-col items-center justify-center gap-1 rounded-2xl border border-rule-2 bg-paper-2 p-3 text-center text-muted hover:bg-paper-3">
+          <Icon name="shipments" className="h-12 w-12 text-accent-deep" />
+          {ready > 0 && <span className="absolute end-2 top-2 rounded-full bg-accent px-2.5 py-0.5 text-base text-white">{ready}</span>}
+          <span className="text-sm font-medium leading-tight text-ink-2">Cart</span>
         </Link>
-        <Link href={`/m/${token}/finished`} className="flex min-h-24 flex-col justify-between gap-2 rounded-2xl border border-rule-2 bg-paper-2 p-3 text-lg font-medium leading-tight hover:bg-paper-3">
-          <Icon name="finished" className="h-6 w-6 text-muted" />
-          Finished
+        {SHOW_FINISHED && (
+          <Link href={`/m/${token}/finished`} className="relative flex min-h-28 flex-col items-center justify-center gap-1 rounded-2xl border border-rule-2 bg-paper-2 p-3 text-center text-muted hover:bg-paper-3">
+            <Icon name="check" className="h-12 w-12 text-ok" />
+            <span className="text-sm font-medium leading-tight text-ink-2">Finished</span>
+          </Link>
+        )}
+        <Link href={`/m/${token}/history`} className="relative flex min-h-28 flex-col items-center justify-center gap-1 rounded-2xl border border-rule-2 bg-paper-2 p-3 text-center text-muted hover:bg-paper-3">
+          <Icon name="receipt" className="h-12 w-12 text-accent-deep" />
+          <span className="text-sm font-medium leading-tight text-ink-2">History</span>
         </Link>
       </div>
 

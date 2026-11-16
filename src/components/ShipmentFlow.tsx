@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { sendShipmentAction } from "@/app/m/actions";
-import { DownloadLink } from "./DownloadLink";
 import { Icon } from "./Icon";
 import { PhotoUpload } from "./PhotoUpload";
 
@@ -46,17 +45,6 @@ function StepTitle({ n, children, note, hint }: { n: number; children: React.Rea
   );
 }
 
-/** A box for a photo: a dashed area with a camera, the button inside it. */
-function DropBox({ children, text }: { children: React.ReactNode; text: string }) {
-  return (
-    <div className="space-y-3 rounded-2xl border-2 border-dashed border-rule-2 bg-paper-2 p-4 text-center">
-      <Icon name="photos" className="mx-auto h-8 w-8 text-muted" />
-      <p className="text-base text-muted">{text}</p>
-      {children}
-    </div>
-  );
-}
-
 /** A small tag on the right of a checklist row. */
 function Tag({ children, on }: { children: React.ReactNode; on?: boolean }) {
   return <span className={`ml-auto shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium ${on ? "bg-ok-soft text-ok" : "border border-rule-2 text-muted"}`}>{children}</span>;
@@ -93,15 +81,14 @@ export function ShipmentFlow({
   const toggle = (id: number) => setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
 
   const hasItems = picked.length > 0;
-  const hasBill = billPhotoId !== null;
   const canSend = hasItems && turnOk; // the bill photo is optional
   const photoUrl = (id: number) => `/api/m/${token}/photos/${id}`;
   const endpoint = `/api/m/${token}/orders/${orderId}/ship-photos`;
   const mark = (ok: boolean) => <Icon name={ok ? "check" : "alert"} className={`h-5 w-5 shrink-0 ${ok ? "text-leaf" : "text-muted"}`} />;
 
   return (
-    <div className="space-y-6 lg:grid lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start lg:gap-8 lg:space-y-0">
-      <div className="space-y-8">
+    <div className="space-y-6 lg:grid lg:grid-cols-[22rem_minmax(0,1fr)] lg:items-start lg:gap-8 lg:space-y-0">
+      <div className="space-y-8 lg:order-2">
         {!turnOk && (
           <p role="status" className="rounded-2xl bg-paper-3 p-4 text-lg font-medium">
             You can send this order after the orders above it. You can still get the bill photo ready now.
@@ -115,13 +102,13 @@ export function ShipmentFlow({
 
         <section className="space-y-3">
           <StepTitle n={1} hint="Finished items are here. Take out any you are not sending today.">
-            What are you sending?
+            Pending shipment
           </StepTitle>
           <ul className="space-y-2">
             {ready.map((i) => {
               const on = picked.includes(i.id);
               return (
-                <li key={i.id} className={`flex items-center gap-3 rounded-2xl border bg-paper-2 p-4 shadow-sm ${on ? "border-ink" : "border-rule-2"}`}>
+                <li key={i.id} className={`flex items-center gap-3 rounded-2xl border-2 p-4 shadow-sm ${on ? "border-ok/50 bg-ok-soft/40" : "border-bad/40 bg-bad-soft/40"}`}>
                   <span className="min-w-0 flex-1">
                     <span className="flex flex-wrap items-center gap-2">
                       <span className="break-words text-xl font-medium">{i.label}</span>
@@ -132,77 +119,28 @@ export function ShipmentFlow({
                       <Icon name="check" className="h-4 w-4 text-ok" /> I checked it is here
                     </span>
                   </span>
-                  <button
-                    type="button"
-                    onClick={() => toggle(i.id)}
-                    aria-pressed={on}
-                    className={`btn h-auto min-h-11 shrink-0 gap-2 px-5 py-2 text-base ${on ? "!border-ink !bg-ink !text-white" : "btn-quiet"}`}
-                  >
-                    <Icon name={on ? "check" : "plus"} className="h-4 w-4" />
-                    {on ? "Added" : "Add"}
-                  </button>
+                  {/* an item that is in the shipment has no button here (the red cross is in "Your shipment"); an item that is out has a green tick to put it back */}
+                  {!on && (
+                    <button
+                      type="button"
+                      onClick={() => toggle(i.id)}
+                      aria-label={`Put ${i.label} in the shipment`}
+                      className="grid h-14 w-14 shrink-0 place-items-center rounded-full border-2 border-ok bg-ok text-white"
+                    >
+                      <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="m5 12.5 4.5 4.5L19 7.5" />
+                      </svg>
+                    </button>
+                  )}
                 </li>
               );
             })}
           </ul>
           <LockedItems items={locked ?? []} />
         </section>
-
-        <section className="space-y-3">
-          <StepTitle n={2} note="Optional" hint="One bill can be for many items.">
-            Photo of the bill
-          </StepTitle>
-          {billPhotoId !== null ? (
-            <div className="space-y-3 rounded-2xl border border-rule-2 bg-paper-2 p-4 shadow-sm">
-              <div className="flex items-center gap-3">
-                <a href={photoUrl(billPhotoId)} target="_blank" rel="noreferrer" className="shrink-0">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={`${photoUrl(billPhotoId)}?thumb=1`} alt="Bill" className="h-16 w-16 rounded-xl border object-cover" />
-                </a>
-                <div className="min-w-0 flex-1">
-                  <p className="text-lg font-medium">Bill photo</p>
-                  <p className="flex items-center gap-1 text-base text-ok">
-                    <Icon name="check" className="h-4 w-4" /> Added
-                  </p>
-                </div>
-                <DownloadLink href={photoUrl(billPhotoId)} label="Download bill" />
-              </div>
-              <PhotoUpload endpoint={endpoint} fields={{ kind: "bill" }} label="Take the bill photo again" camera quiet />
-            </div>
-          ) : (
-            <DropBox text="You can skip this, or take a clear photo of the bill.">
-              <PhotoUpload endpoint={endpoint} fields={{ kind: "bill" }} label="Take photo of bill" camera quiet />
-            </DropBox>
-          )}
-        </section>
-
-        <section className="space-y-3">
-          <StepTitle n={3} note="Optional" hint="Show the items packed and ready for the courier.">
-            Photo of the packed items
-          </StepTitle>
-          {packagePhotoId !== null ? (
-            <div className="space-y-3 rounded-2xl border border-rule-2 bg-paper-2 p-4 shadow-sm">
-              <div className="flex items-center gap-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={`${photoUrl(packagePhotoId)}?thumb=1`} alt="Packed items" className="h-16 w-16 shrink-0 rounded-xl border object-cover" />
-                <div className="min-w-0 flex-1">
-                  <p className="text-lg font-medium">Packed items</p>
-                  <p className="flex items-center gap-1 text-base text-ok">
-                    <Icon name="check" className="h-4 w-4" /> Added
-                  </p>
-                </div>
-              </div>
-              <PhotoUpload endpoint={endpoint} fields={{ kind: "package" }} label="Take the photo again" camera quiet />
-            </div>
-          ) : (
-            <DropBox text="You can skip this.">
-              <PhotoUpload endpoint={endpoint} fields={{ kind: "package" }} label="Take photo of packed items" camera quiet />
-            </DropBox>
-          )}
-        </section>
       </div>
 
-      <form action={sendShipmentAction} className="space-y-4 overflow-hidden rounded-3xl border border-rule-2 bg-paper-2 p-5 shadow-sm lg:sticky lg:top-4">
+      <form action={sendShipmentAction} className="space-y-4 overflow-hidden rounded-3xl border border-rule-2 bg-paper-2 p-5 shadow-sm lg:sticky lg:top-4 lg:order-1">
         <span aria-hidden className="-mx-5 -mt-5 mb-1 block h-1 bg-gradient-to-r from-accent via-accent-deep to-ink" />
         <input type="hidden" name="token" value={token} />
         <input type="hidden" name="orderId" value={orderId} />
@@ -229,8 +167,13 @@ export function ShipmentFlow({
                     {i.label}
                     {i.sub && <span className="block text-sm font-normal text-muted" translate="no">{i.sub}</span>}
                   </span>
-                  <button type="button" onClick={() => toggle(i.id)} className="btn btn-quiet h-auto min-h-9 px-3 py-1 text-sm" aria-label={`Take ${i.label} out of the shipment`}>
-                    Remove
+                  <button
+                    type="button"
+                    onClick={() => toggle(i.id)}
+                    className="grid h-10 w-10 shrink-0 place-items-center rounded-full border-2 border-bad bg-white text-bad"
+                    aria-label={`Take ${i.label} out of the shipment`}
+                  >
+                    <Icon name="close" className="h-5 w-5" />
                   </button>
                 </li>
               ))}
@@ -240,14 +183,27 @@ export function ShipmentFlow({
         <div className="space-y-2">
           <p className="text-xs font-medium uppercase tracking-wider text-muted">Before you send</p>
           <ul className="space-y-2 text-base">
+            <li className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 ${hasItems ? "border-ok/30 bg-ok-soft/40" : "border-rule-2"}`}>
+              {mark(hasItems)} <span className={hasItems ? "" : "text-muted"}>{hasItems ? `${picked.length} item${picked.length === 1 ? "" : "s"} chosen` : "Choose the items"}</span>
+              {hasItems && <Tag on>Done</Tag>}
+            </li>
+            {/* the two photos are optional: a plus on the row adds one (the camera opens); a small picture shows it is there */}
             {[
-              { ok: hasItems, text: hasItems ? `${picked.length} item${picked.length === 1 ? "" : "s"} chosen` : "Choose the items", tag: hasItems ? "Done" : "", on: true },
-              { ok: hasBill, text: hasBill ? "Bill photo added" : "Bill photo", tag: hasBill ? "Attached" : "Optional", on: hasBill },
-              { ok: packagePhotoId !== null, text: "Packed items photo", tag: packagePhotoId !== null ? "Attached" : "Optional", on: packagePhotoId !== null },
+              { id: billPhotoId, kind: "bill", name: "Bill photo", added: "Bill photo added", alt: "Bill", again: "Take the bill photo again", add: "Take photo of bill" },
+              { id: packagePhotoId, kind: "package", name: "Packed items photo", added: "Packed items photo", alt: "Packed items", again: "Take the photo again", add: "Take photo of packed items" },
             ].map((r) => (
-              <li key={r.text} className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 ${r.ok ? "border-ok/30 bg-ok-soft/40" : "border-rule-2"}`}>
-                {mark(r.ok)} <span className={r.ok ? "" : "text-muted"}>{r.text}</span>
-                {r.tag && <Tag on={r.on}>{r.tag}</Tag>}
+              <li key={r.kind} className={`flex flex-wrap items-center gap-2 rounded-xl border px-3 py-2 ${r.id !== null ? "border-ok/30 bg-ok-soft/40" : "border-rule-2"}`}>
+                {r.id !== null ? (
+                  <a href={photoUrl(r.id)} target="_blank" rel="noreferrer" className="shrink-0">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={`${photoUrl(r.id)}?thumb=1`} alt={r.alt} className="h-11 w-11 rounded-lg border object-cover" />
+                  </a>
+                ) : (
+                  <Icon name="photos" className="h-5 w-5 shrink-0 text-muted" />
+                )}
+                <span className={`min-w-0 flex-1 ${r.id !== null ? "" : "text-muted"}`}>{r.id !== null ? r.added : r.name}</span>
+                <Tag on={r.id !== null}>{r.id !== null ? "Attached" : "Optional"}</Tag>
+                <PhotoUpload endpoint={endpoint} fields={{ kind: r.kind }} label={r.id !== null ? r.again : r.add} camera iconOnly />
               </li>
             ))}
             {!turnOk && (

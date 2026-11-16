@@ -1,4 +1,5 @@
 import { requireMaster } from "@/lib/master-session";
+import { shipmentPhotoForMaster } from "@/lib/shipping";
 import { photoForMaster } from "@/lib/stages";
 import { get } from "@/lib/storage";
 import { photoDownloadResponse } from "@/lib/photo-download";
@@ -7,7 +8,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ token: string; 
   const { token, id } = await ctx.params;
   const master = await requireMaster(token);
   if (!master) return new Response("Not found", { status: 404 });
-  const photo = photoForMaster(master.id, Number(id));
+  const photo = photoForMaster(master.id, Number(id)) ?? shipmentPhotoForMaster(master.id, Number(id));
   if (!photo) return new Response("Not found", { status: 404 });
   const query = new URL(req.url).searchParams;
   if (query.get("download") === "1") return photoDownloadResponse(photo);

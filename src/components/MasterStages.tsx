@@ -7,6 +7,8 @@ import { PhotoUpload } from "./PhotoUpload";
 import { DownloadLink } from "@/components/DownloadLink";
 import { btnPrimary } from "./ui";
 import { Icon } from "@/components/Icon";
+import { StepPicture } from "@/components/StepPicture";
+import { stepIconName } from "@/lib/step-icon";
 
 /** Reference pictures and the step list (with photo gate) for one item, for the master. */
 export function MasterStages({
@@ -90,15 +92,30 @@ export function MasterStages({
           <ol className="space-y-2">
             {stages.map((s, n) => {
               const photo = s.latestPhoto;
-              return (
-                <li
-                  key={s.key}
-                  className={`space-y-2 rounded-2xl p-4 ${s.status === "open" ? "bg-accent-soft" : "bg-paper-3"}`}
-                >
-                  <div className="text-xl font-medium">
-                    {s.status === "done" ? <Icon name="check" className="me-1 inline h-5 w-5" /> : s.status === "locked" ? <Icon name="lock" className="me-1 inline h-5 w-5" /> : null}
-                    {n + 1}. {s.label}
-                  </div>
+              // "Mark complete" sits at the end of the step's own row, next to its name
+              const canComplete = s.status === "open" && turn && confirmed && s.photoOk && s.fieldsOk;
+              const complete = canComplete ? (
+                <form action={completeStageAction} className="ms-auto shrink-0 max-[420px]:w-full">
+                  <input type="hidden" name="token" value={token} />
+                  <input type="hidden" name="orderId" value={orderId} />
+                  <input type="hidden" name="itemId" value={itemId} />
+                  <input type="hidden" name="stageKey" value={s.key} />
+                  <button className={`${btnPrimary} step-btn gap-1.5`}>
+                    <Icon name="check" className="h-5 w-5" /> Mark complete
+                  </button>
+                </form>
+              ) : null;
+              const header = (
+                <>
+                    <StepPicture label={s.label} badge={s.status === "done" ? "done" : s.status === "locked" ? "locked" : null} />
+                    <span className={`min-w-[6.5rem] flex-1 ${stepIconName(s.label) ? "text-base text-ink-2" : ""}`}>
+                      {s.status === "done" ? <Icon name="check" className="me-1 inline h-5 w-5" /> : s.status === "locked" ? <Icon name="lock" className="me-1 inline h-5 w-5" /> : null}
+                      {n + 1}. {s.label}
+                    </span>
+                </>
+              );
+              const body = (
+                <>
                   {/* only the number of days, never a date */}
                   {s.days && s.status !== "done" && <p className="text-base text-muted">{`Should take ${s.days} day${s.days === 1 ? "" : "s"}.`}</p>}
 
@@ -189,14 +206,23 @@ export function MasterStages({
                   {(notes.get(s.key)?.length ?? 0) > 0 && <StepNotesList notes={notes.get(s.key)!} />}
 
                   {turn && s.status !== "locked" && (
-                    <form action={addNoteAction} className="space-y-1.5">
-                      <input type="hidden" name="token" value={token} />
-                      <input type="hidden" name="orderId" value={orderId} />
-                      <input type="hidden" name="itemId" value={itemId} />
-                      <input type="hidden" name="stageKey" value={s.key} />
-                      <textarea name="text" rows={2} maxLength={1000} placeholder="Write a note about this step" aria-label={`Note for ${s.label}`} className="textarea w-full text-lg leading-snug" />
-                      <button className="btn btn-quiet h-auto min-h-12 w-full px-4 py-2 text-lg">Add note</button>
-                    </form>
+                    <details className="group/note">
+                      {/* a note is optional: the master taps the plus when he wants to write one */}
+                      <summary className="inline-flex min-h-10 cursor-pointer list-none items-center gap-2 text-base font-medium text-ink-2 [&::-webkit-details-marker]:hidden">
+                        <span className="grid h-9 w-9 place-items-center rounded-full border-[1.5px] border-ink text-ink">
+                          <Icon name="plus" className="h-5 w-5 transition-transform group-open/note:rotate-45" />
+                        </span>
+                        Add note
+                      </summary>
+                      <form action={addNoteAction} className="space-y-1.5 pt-2">
+                        <input type="hidden" name="token" value={token} />
+                        <input type="hidden" name="orderId" value={orderId} />
+                        <input type="hidden" name="itemId" value={itemId} />
+                        <input type="hidden" name="stageKey" value={s.key} />
+                        <textarea name="text" rows={2} maxLength={1000} placeholder="Write a note about this step" aria-label={`Note for ${s.label}`} className="textarea w-full text-base leading-snug" />
+                        <button className="btn btn-quiet step-btn">Add note</button>
+                      </form>
+                    </details>
                   )}
 
                   {s.status === "open" &&
@@ -204,15 +230,27 @@ export function MasterStages({
                       <p className="text-base">You can finish this step after the orders above it.</p>
                     ) : !confirmed ? (
                       <p className="text-lg font-medium">First press &quot;I have seen this order&quot; at the top.</p>
-                    ) : s.photoOk && s.fieldsOk ? (
-                      <form action={completeStageAction}>
-                        <input type="hidden" name="token" value={token} />
-                        <input type="hidden" name="orderId" value={orderId} />
-                        <input type="hidden" name="itemId" value={itemId} />
-                        <input type="hidden" name="stageKey" value={s.key} />
-                        <button className={`${btnPrimary} w-full`}>Mark complete</button>
-                      </form>
                     ) : null)}
+                </>
+              );
+              return s.status === "done" ? (
+                <li key={s.key} className="rounded-2xl border border-ok/40 bg-ok-soft p-4">
+                  {/* a finished step folds up; tap it to read its notes and pictures */}
+                  <details className="group/step">
+                    <summary className="flex cursor-pointer list-none items-center gap-3 text-xl font-medium [&::-webkit-details-marker]:hidden">
+                      {header}
+                      <Icon name="chevron" className="h-6 w-6 shrink-0 text-muted transition-transform group-open/step:rotate-180" />
+                    </summary>
+                    <div className="space-y-2 pt-3">{body}</div>
+                  </details>
+                </li>
+              ) : (
+                <li key={s.key} className={`space-y-2 rounded-2xl border p-4 ${s.status === "open" ? "border-bad/50 bg-bad-soft" : "border-bad/25 bg-bad-soft/60"}`}>
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xl font-medium">
+                    {header}
+                    {complete}
+                  </div>
+                  {body}
                 </li>
               );
             })}

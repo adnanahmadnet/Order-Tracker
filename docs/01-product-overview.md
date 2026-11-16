@@ -44,7 +44,7 @@ Stages must be **configurable**, not hard-coded.
 - No heavy security or full user management. A personal link plus PIN is enough.
 - No hard delete in the first versions.
 - Not for ready-made/stock products. **Custom orders only.**
-- Not multi-language, except that the master's screens have an English / Urdu button (added 16 Nov 2026). The office side is English only.
+- Not multi-language, except that the master's screens have an English / Urdu / Bengali / Hindi button (added 16-17 Nov 2026). The office side is English only.
 - Not a public website; no customer-facing access.
 
 ## Delivery constraint
