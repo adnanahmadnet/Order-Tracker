@@ -148,6 +148,13 @@
       "when": 1794930772313,
       "tag": "0020_design_number_not_unique",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "6",
+      "when": 1794938036137,
+      "tag": "0021_note_fields_writable",
+      "breakpoints": true
     }
   ]
 }

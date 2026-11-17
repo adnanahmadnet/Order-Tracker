@@ -112,7 +112,7 @@ const PALETTE: { group: string; items: PaletteItem[] }[] = [
     group: "Text on the form",
     items: [
       { type: "heading", name: "Bold heading", hint: "A bold title for a section", label: "Heading" },
-      { type: "note", name: "Note", hint: "A line of instructions", label: "Write a note here" },
+      { type: "longtext", name: "Note", hint: "A box to write a note in", label: "Note" },
     ],
   },
   {
