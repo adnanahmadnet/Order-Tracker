@@ -150,8 +150,8 @@ export default async function MasterOrder({
 
         <div className="grid grid-cols-3 gap-2 border-t border-rule pt-4">
           {[
-            { href: `/api/m/${token}/orders/${order.id}/pdf`, icon: "download", text: "PDF", native: true },
-            { href: `/m/${token}/orders/${order.id}/print`, icon: "note", text: "Print", native: false },
+            { href: `/m/${token}/orders/${order.id}/print`, icon: "download", text: "PDF", native: false }, // the page with Print, Print tailor slips, Download PDF, Download tailor slips
+            { href: `/m/${token}/orders/${order.id}/print?autoprint=1`, icon: "note", text: "Print", native: false }, // opens the print window (Ctrl+P) at once
             { href: `/m/${token}/cart`, icon: "shipments", text: "Cart", native: false },
           ].map((b) => {
             const cls = "flex min-h-12 items-center justify-center gap-2 rounded-xl border border-rule-2 bg-paper-2 px-2 text-lg font-medium text-ink hover:bg-paper-3";

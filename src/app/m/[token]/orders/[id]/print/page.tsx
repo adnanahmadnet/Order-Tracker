@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PinForm } from "@/components/PinForm";
+import { AutoPrint } from "@/components/AutoPrint";
 import { PrintButton } from "@/components/PrintButton";
 import { PrintSheets } from "@/components/PrintSheets";
 import { btnSecondary } from "@/components/ui";
@@ -9,8 +10,9 @@ import { masterOrder } from "@/lib/orders";
 import { buildPrintData, hasSlips } from "@/lib/print";
 import { Icon } from "@/components/Icon";
 
-export default async function MasterPrint({ params }: { params: Promise<{ token: string; id: string }> }) {
+export default async function MasterPrint({ params, searchParams }: { params: Promise<{ token: string; id: string }>; searchParams: Promise<{ autoprint?: string }> }) {
   const { token, id } = await params;
+  const { autoprint } = await searchParams;
   const state = await linkState(token);
   if (state === "invalid") return <p className="text-xl">This link is not valid. Ask the office for a new link.</p>;
   if (state === "need-pin") return <PinForm token={token} />;
@@ -37,6 +39,7 @@ export default async function MasterPrint({ params }: { params: Promise<{ token:
           </a>
         )}
       </div>
+      {autoprint === "1" && <AutoPrint />}
       <PrintSheets data={data} imgUrl={(pid) => `/api/m/${token}/photos/${pid}`} />
     </div>
   );
