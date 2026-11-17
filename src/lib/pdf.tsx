@@ -7,19 +7,19 @@ import { get } from "./storage";
 const MM = 2.835; // points per millimetre
 const GREY = "#8a8a8a";
 const s = StyleSheet.create({
-  page: { padding: 28, fontFamily: "Helvetica", fontSize: 11 },
+  page: { padding: 28, fontFamily: "Helvetica", fontSize: 13 },
   head: { borderWidth: 1.5, borderColor: "#000", marginBottom: 14 },
   headTop: { flexDirection: "row" },
   headLeft: { flex: 1, padding: 8 },
   headRight: { width: 150, padding: 8, borderLeftWidth: 1.5, borderLeftColor: "#000", alignItems: "flex-end" },
-  small: { fontSize: 8, letterSpacing: 1, textTransform: "uppercase" },
+  small: { fontSize: 10, letterSpacing: 1, textTransform: "uppercase" },
   customer: { fontSize: 18, fontFamily: "Helvetica-Bold", marginTop: 1 },
   due: { fontSize: 14, fontFamily: "Helvetica-Bold", marginTop: 1, textAlign: "right" },
   title: { fontSize: 24, fontFamily: "Helvetica-Bold", paddingHorizontal: 8, paddingVertical: 6, borderTopWidth: 1.5, borderTopColor: "#000" },
   item: { marginBottom: 16 },
   itemLabel: { fontSize: 15, fontFamily: "Helvetica-Bold", borderBottomWidth: 1.5, borderBottomColor: "#000", paddingBottom: 3, marginBottom: 2 },
-  headingLine: { fontFamily: "Helvetica-Bold", fontSize: 9, letterSpacing: 1, textTransform: "uppercase", marginTop: 12, marginBottom: 2, borderBottomWidth: 1.5, borderBottomColor: "#000", paddingBottom: 2 },
-  note: { fontSize: 9, fontStyle: "italic", paddingVertical: 3, borderBottomWidth: 0.5, borderBottomColor: GREY },
+  headingLine: { fontFamily: "Helvetica-Bold", fontSize: 11, letterSpacing: 1, textTransform: "uppercase", marginTop: 12, marginBottom: 2, borderBottomWidth: 1.5, borderBottomColor: "#000", paddingBottom: 2 },
+  note: { fontSize: 11, fontStyle: "italic", paddingVertical: 3, borderBottomWidth: 0.5, borderBottomColor: GREY },
   row: { paddingVertical: 4, borderBottomWidth: 0.5, borderBottomColor: GREY },
   rowLine: { flexDirection: "row" },
   rowLabel: { width: "34%", fontFamily: "Helvetica-Bold", paddingRight: 8 },
@@ -28,9 +28,9 @@ const s = StyleSheet.create({
   grid: { marginTop: 4, borderTopWidth: 1, borderLeftWidth: 1, borderColor: "#000" },
   gridRow: { flexDirection: "row" },
   cell: { width: "33.33%", flexShrink: 0, paddingVertical: 4, paddingHorizontal: 6, borderRightWidth: 1, borderBottomWidth: 1, borderColor: "#000" },
-  cellLabel: { fontSize: 8 },
-  cellValue: { fontSize: 13, fontFamily: "Helvetica-Bold" },
-  cellNote: { fontSize: 7, textTransform: "uppercase" },
+  cellLabel: { fontSize: 10 },
+  cellValue: { fontSize: 15, fontFamily: "Helvetica-Bold" },
+  cellNote: { fontSize: 9, textTransform: "uppercase" },
   photos: { flexDirection: "row", flexWrap: "wrap", marginTop: 4, alignSelf: "stretch" },
   cutLine: { marginTop: 14, paddingTop: 2, borderTopWidth: 1.5, borderTopStyle: "dashed", borderTopColor: "#000", textAlign: "center", fontSize: 7, letterSpacing: 1.5, textTransform: "uppercase" },
   slipTitle: { flexDirection: "row", justifyContent: "space-between", marginTop: 6, fontSize: 10 },
@@ -38,13 +38,13 @@ const s = StyleSheet.create({
   slipGrid: { marginTop: 10 },
   slipRow: { flexDirection: "row", marginBottom: 10 },
   slipCell: { flexShrink: 0, paddingHorizontal: 3, alignItems: "center" },
-  slipLabel: { fontSize: 10, textDecoration: "underline", textAlign: "center" },
-  slipValue: { fontSize: 12, textAlign: "center", marginTop: 2, borderBottomWidth: 1, borderBottomColor: "#000", alignSelf: "stretch" },
-  slipCellNote: { fontSize: 7, textTransform: "uppercase", textAlign: "center" },
+  slipLabel: { fontSize: 11, textDecoration: "underline", textAlign: "center" },
+  slipValue: { fontSize: 13, textAlign: "center", marginTop: 2, borderBottomWidth: 1, borderBottomColor: "#000", alignSelf: "stretch" },
+  slipCellNote: { fontSize: 8, textTransform: "uppercase", textAlign: "center" },
   karigarTitle: { fontSize: 14, textAlign: "center", marginTop: 6, fontFamily: "Helvetica-Bold" },
   karigarValue: { fontSize: 14, textAlign: "center", marginTop: 3 },
-  slipNote: { fontSize: 9, marginTop: 2 },
-  galleryHead: { fontFamily: "Helvetica-Bold", fontSize: 9, letterSpacing: 1, textTransform: "uppercase", marginTop: 12, borderBottomWidth: 1.5, borderBottomColor: "#000", paddingBottom: 2 },
+  slipNote: { fontSize: 11, marginTop: 2 },
+  galleryHead: { fontFamily: "Helvetica-Bold", fontSize: 11, letterSpacing: 1, textTransform: "uppercase", marginTop: 12, borderBottomWidth: 1.5, borderBottomColor: "#000", paddingBottom: 2 },
   notes: { marginTop: 10, paddingTop: 6, borderTopWidth: 1.5, borderTopColor: "#000" },
 });
 
@@ -64,20 +64,23 @@ export async function renderOrderPdf(data: PrintData, opts: { only?: "slips" } =
     if (b) images.set(id, b);
   }
   // inBox: a picture inside a measurement box is never wider than the box (and never taller than twice `mm`)
-  const pics = (ids: number[], mm: number, inBox = false) => (
-    <View style={s.photos}>
-      {ids.map((id) =>
-        images.has(id) ? (
+  // (in a box the pictures sit side by side, sharing the box width, like the print view)
+  const pics = (ids: number[], mm: number, inBox = false) => {
+    const shown = ids.filter((id) => images.has(id));
+    const share = Math.floor(96 / Math.max(shown.length, 1));
+    return (
+      <View style={s.photos}>
+        {shown.map((id) => (
           // eslint-disable-next-line jsx-a11y/alt-text
           <Image
             key={id}
             src={{ data: images.get(id)!, format: "jpg" }}
-            style={inBox ? { width: "100%", maxHeight: mm * 2 * MM, objectFit: "contain", marginBottom: 4 } : { height: mm * MM, marginRight: 6, marginBottom: 6 }}
+            style={inBox ? { width: `${share}%`, height: mm * MM, objectFit: "contain", objectPositionX: 0, marginRight: 2, marginBottom: 4 } : { height: mm * MM, marginRight: 6, marginBottom: 6 }}
           />
-        ) : null,
-      )}
-    </View>
-  );
+        ))}
+      </View>
+    );
+  };
 
   // `fixed`: repeated at the top of every page, also when an item type runs on to a second page (by request 14 Nov 2026)
   const head = (title: string) => (

@@ -29,6 +29,7 @@ export default async function MasterHome({
   const master = (await requireMaster(token))!;
   const { active } = masterDashboard(master.id);
   const pending = pendingWork(master.id);
+  const pendingOrders = new Set(pending.map((p) => p.orderId)).size; // the badge counts orders, not items
   // when some items of an order are finished and others are not, say what is left (for example "1 of 2 items finished. 1 left to make.")
   const sayLeft = (orderId: number) => {
     const st = itemStatesOfOrder(orderId);
@@ -56,7 +57,7 @@ export default async function MasterHome({
         </Link>
         <Link href={`/m/${token}/pending`} className="relative flex min-h-28 flex-col items-center justify-center gap-1 rounded-2xl border border-rule-2 bg-paper-2 p-3 text-center text-muted hover:bg-paper-3">
           <Icon name="clock" className="h-12 w-12 text-accent-deep" />
-          {pending.length > 0 && <span className="absolute end-2 top-2 rounded-full bg-accent px-2.5 py-0.5 text-base text-white">{pending.length}</span>}
+          {pendingOrders > 0 && <span className="absolute end-2 top-2 rounded-full bg-accent px-2.5 py-0.5 text-base text-white">{pendingOrders}</span>}
           <span className="text-sm font-medium leading-tight text-ink-2">My pending work</span>
         </Link>
         <Link href={`/m/${token}/cart`} className="relative flex min-h-28 flex-col items-center justify-center gap-1 rounded-2xl border border-rule-2 bg-paper-2 p-3 text-center text-muted hover:bg-paper-3">

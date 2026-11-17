@@ -1,0 +1,1 @@
+DROP INDEX `orders_design_number_unique`;

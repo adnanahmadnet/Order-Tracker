@@ -110,7 +110,7 @@ export function FieldRow({
     );
   }
 
-  const withPictures = !!f.pictures && (f.type === "text" || f.type === "longtext" || f.type === "number") && !pictureNote;
+  const withPictures = ((!!f.pictures && (f.type === "text" || f.type === "longtext" || f.type === "number")) || f.type === "designnumber") && !pictureNote; // a design number box always has the + for its own pictures
   const control =
     f.type === "longtext" ? (
       <textarea name={name} rows={compact ? 3 : 4} defaultValue={value} className={textarea} aria-label={withPictures ? f.label : undefined} aria-invalid={missing || undefined} />

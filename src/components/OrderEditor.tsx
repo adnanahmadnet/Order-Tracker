@@ -13,7 +13,7 @@ import { NotePictures } from "./NotePictures";
 import { RemoveItemButton } from "./RemoveItemButton";
 import { OrderPdfBox, type PdfRow } from "./OrderPdfBox";
 import { FieldProgress } from "./FieldProgress";
-import type { DesignOption } from "./DesignPicker";
+import { DesignNumberSelect, type DesignOption } from "./DesignPicker";
 import { Icon } from "./Icon";
 import { Field, RequiredMark, btnPrimary, btnSecondary, input, textarea, card } from "./ui";
 
@@ -136,15 +136,12 @@ export function OrderEditor({
           <Field label="Customer name" required upper>
             <input name="customerName" required defaultValue={pick("customerName", base.customerName)} className={input} />
           </Field>
-          <Field label="Design number" required upper>
-            <input
-              name="designNumber"
-              required
-              defaultValue={pick("designNumber", base.designNumber ?? "")}
-              className={`${input} uppercase`}
-              autoCapitalize="characters"
-              spellCheck={false}
-            />
+          <Field label="Design number" upper>
+            {designs.length > 0 ? (
+              <DesignNumberSelect name="designNumber" value={pick("designNumber", base.designNumber ?? "")} designs={designs} label="Design number" />
+            ) : (
+              <input name="designNumber" defaultValue={pick("designNumber", base.designNumber ?? "")} className={`${input} uppercase`} autoCapitalize="characters" spellCheck={false} />
+            )}
           </Field>
           <div id="masters-field" className="scroll-mt-24">
             <span className="mb-1 block text-xs font-medium uppercase tracking-wide text-muted">

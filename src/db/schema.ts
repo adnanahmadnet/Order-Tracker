@@ -26,7 +26,7 @@ export const orders = sqliteTable("orders", {
   orderNumber: integer("order_number").notNull().unique(),
   customerName: text("customer_name").notNull(), // not unique
   // each order has its own Design Number (kept in capitals, never used twice). Older orders may not have one yet.
-  designNumber: text("design_number").unique(),
+  designNumber: text("design_number"),
   // an accessory or other single item ordered on its own is linked to the Design Number of its main Sherwani or Bridal
   linkedDesignNumber: text("linked_design_number"),
   myDueDate: text("my_due_date").notNull(), // YYYY-MM-DD, admin only

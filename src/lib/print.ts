@@ -158,7 +158,9 @@ export function buildPrintData(orderId: number): PrintData | null {
       if (!onSlip(f, underMeasure[i])) continue;
       const v = displayValue(f, item.values[f.key]);
       if (!v) continue;
-      if (f.type === "longtext" || v.includes("\n") || v.length > 24) slipNotes.push(v);
+      // a picked answer (dropdown / choose one) is a short answer: it keeps its place and name in the grid, however long
+      const picked = (f.type === "select" || f.type === "radio") && !v.includes("\n") && v.length <= 60;
+      if (!picked && (f.type === "longtext" || v.includes("\n") || v.length > 24)) slipNotes.push(v);
       else {
         const note = item.values[noteKey(f.key)];
         slipCells.push({ label: f.short?.trim() || f.label, value: v, ...(note ? { note } : {}), ...(f.newRow ? { newRow: true } : {}) });

@@ -48,8 +48,8 @@ function parseOrder(f: FormData): OrderInput {
     details: str(f, "details"),
     designNumber: str(f, "designNumber"),
   };
-  if (!input.customerName || !input.designNumber || !DATE.test(input.myDueDate) || !DATE.test(input.karigarDueDate) || !input.masterId) {
-    throw new Error("Please fill customer name, design number, both due dates and choose at least one master.");
+  if (!input.customerName || !DATE.test(input.myDueDate) || !DATE.test(input.karigarDueDate) || !input.masterId) {
+    throw new Error("Please fill customer name, both due dates and choose at least one master.");
   }
   return input;
 }
@@ -57,7 +57,7 @@ function parseOrder(f: FormData): OrderInput {
 /** Stores the pictures chosen in the form for each picture field of one item, as reference pictures. A bad file is skipped. */
 async function savePictures(f: FormData, orderId: number, itemId: number, key: string, fields: FieldDef[]) {
   for (const fd of fields) {
-    if (!["picture", "text", "longtext", "number"].includes(fd.type)) continue; // a picture pasted into any text or number box is kept under it
+    if (!["picture", "text", "longtext", "number", "designnumber"].includes(fd.type)) continue; // a picture pasted into any text or number box is kept under it
     for (const file of f.getAll(`pic:${key}:${fd.key}`)) {
       if (!(file instanceof File) || file.size === 0) continue;
       const saved = await storeUpload(orderId, file);
@@ -101,7 +101,7 @@ ${v}` : v; // checkboxes send several
   const draftSave = !send && !wasSent; // saving an unsent order: the fields may stay empty
   // the first time a "warn if empty" field is empty the office is warned; pressing the button again (the form then carries this) saves and sends anyway
   const confirmed = str(f, "confirmMissing") === "1";
-  // a design number is used once; a link must point at another order's design number
+  // design numbers may repeat across orders (nothing to check)
   const designProblem = checkDesignNumbers(input, orderId || undefined);
   if (designProblem) return { nonce, missing: [], missingKeys: [], values, error: designProblem };
   const collect = (key: string, fields: FieldDef[]) => {

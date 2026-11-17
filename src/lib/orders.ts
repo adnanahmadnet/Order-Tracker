@@ -23,15 +23,12 @@ export type OrderInput = {
 export const cleanDesignNumber = (v: string | null | undefined): string | null => (v ?? "").trim().toUpperCase() || null;
 
 /**
- * Why these design numbers cannot be saved, or null when they are fine. A Design Number belongs to one order only.
- * `ownId` is the order being edited.
+ * Why these design numbers cannot be saved, or null when they are fine. Several orders may share a Design Number
+ * (changed 17 Nov 2026, client request), so nothing is refused; the function stays so callers do not change.
  */
 export function checkDesignNumbers(input: { designNumber?: string | null }, ownId?: number): string | null {
-  const mine = cleanDesignNumber(input.designNumber);
-  if (mine) {
-    const clash = db.select({ id: orders.id, n: orders.orderNumber }).from(orders).where(eq(orders.designNumber, mine)).get();
-    if (clash && clash.id !== ownId) return `Design number ${mine} is already used by order #${clash.n}. Each order needs its own.`;
-  }
+  void input;
+  void ownId;
   return null;
 }
 

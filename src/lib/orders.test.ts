@@ -105,16 +105,17 @@ describe("orders", () => {
     expect(mine.find((r) => r.id === far)!.band).toBe("blue");
   });
 
-  it("gives each order its own design number, and links an accessory to the main design", () => {
+  it("keeps design numbers in capitals, lets orders share one, and links an accessory to the main design", () => {
     const a = m.createMaster({ name: "Design", pin: "1" });
     const main = o.createOrder({ ...input(a, "Main"), designNumber: " ns-206 " });
     expect(o.getOrder(main)!.designNumber).toBe("NS-206"); // kept in capitals, no spaces at the ends
 
-    // a design number is used once, whatever the capitals
-    expect(() => o.createOrder({ ...input(a, "Other"), designNumber: "ns-206" })).toThrow(/already used by order #/);
-    expect(o.checkDesignNumbers({ designNumber: "NS-206" })).toMatch(/already used/);
+    // several orders may share a design number (client request 17 Nov 2026)
+    const other = o.createOrder({ ...input(a, "Other"), designNumber: "ns-206" });
+    expect(o.getOrder(other)!.designNumber).toBe("NS-206");
+    expect(o.checkDesignNumbers({ designNumber: "NS-206" })).toBeNull();
     const second = o.createOrder({ ...input(a, "Second"), designNumber: "NS-207" });
-    expect(() => o.updateOrder(second, { ...input(a, "Second"), designNumber: "NS-206" })).toThrow(/already used/);
+    expect(() => o.updateOrder(second, { ...input(a, "Second"), designNumber: "NS-206" })).not.toThrow();
     // an order may keep its own number when it is edited
     expect(() => o.updateOrder(second, { ...input(a, "Second", "2099-02-02"), designNumber: "NS-207" })).not.toThrow();
 
