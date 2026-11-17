@@ -43,7 +43,8 @@ const s = StyleSheet.create({
   slipCellNote: { fontSize: 8, textTransform: "uppercase", textAlign: "center" },
   karigarTitle: { fontSize: 14, textAlign: "center", marginTop: 6, fontFamily: "Helvetica-Bold" },
   karigarValue: { fontSize: 14, textAlign: "center", marginTop: 3 },
-  slipNote: { fontSize: 11, marginTop: 2 },
+  slipNote: { fontSize: 12, marginTop: 6, paddingTop: 4, borderTopWidth: 0.5, borderTopColor: "#000" },
+  slipNoteLabel: { fontFamily: "Helvetica-Bold", fontSize: 10, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 1 },
   galleryHead: { fontFamily: "Helvetica-Bold", fontSize: 11, letterSpacing: 1, textTransform: "uppercase", marginTop: 12, borderBottomWidth: 1.5, borderBottomColor: "#000", paddingBottom: 2 },
   notes: { marginTop: 10, paddingTop: 6, borderTopWidth: 1.5, borderTopColor: "#000" },
 });
@@ -138,9 +139,10 @@ export async function renderOrderPdf(data: PrintData, opts: { only?: "slips" } =
           ))}
         </View>
         {item.slip.notes.map((t, k) => (
-          <Text key={k} style={s.slipNote}>
-            {t}
-          </Text>
+          <View key={k} style={s.slipNote} wrap={false}>
+            {item.slip!.noteLabels?.[k] ? <Text style={s.slipNoteLabel}>{item.slip!.noteLabels[k]}</Text> : null}
+            <Text>{t}</Text>
+          </View>
         ))}
       </View>
     ) : null;

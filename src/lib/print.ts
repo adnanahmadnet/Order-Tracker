@@ -17,7 +17,7 @@ export type SheetItem = {
   refPhotoIds?: number[]; // the ones of photoIds from the "Reference picture" field, printed REF_PHOTO_MM high
   // the tailor slip: the measurements of this item again, in short names, to cut off and hand to the karigar. No dates.
   // head: the extra details the office switched on for the slip's header line (never a date)
-  slip?: { cells: GridCell[]; cols: number; notes: string[]; head?: SlipHead };
+  slip?: { cells: GridCell[]; cols: number; notes: string[]; noteLabels?: string[]; head?: SlipHead };
   // the karigar paper: the measurements the karigar's own paper is written from, in short names, in the rows the office laid out
   karigar?: { title: string; cols: number; rows: { label: string; value: string }[][] };
 };
@@ -151,6 +151,7 @@ export function buildPrintData(orderId: number): PrintData | null {
     // Measurements heading); long answers go below the table. Pictures, headings, notes and the dates never do.
     const slipCells: GridCell[] = [];
     const slipNotes: string[] = [];
+    const slipNoteLabels: string[] = []; // the field name of each note, so "Do this ASAP" is shown as "Notes: Do this ASAP"
     let slipCols = DEFAULT_PER_ROW;
     const underMeasure = underMeasurements(item.snapshot.fields);
     for (const [i, f] of item.snapshot.fields.entries()) {
@@ -160,7 +161,7 @@ export function buildPrintData(orderId: number): PrintData | null {
       if (!v) continue;
       // a picked answer (dropdown / choose one) is a short answer: it keeps its place and name in the grid, however long
       const picked = (f.type === "select" || f.type === "radio") && !v.includes("\n") && v.length <= 60;
-      if (!picked && (f.type === "longtext" || v.includes("\n") || v.length > 24)) slipNotes.push(v);
+      if (!picked && (f.type === "longtext" || v.includes("\n") || v.length > 24)) { slipNotes.push(v); slipNoteLabels.push(f.short?.trim() || f.label); }
       else {
         const note = item.values[noteKey(f.key)];
         slipCells.push({ label: f.short?.trim() || f.label, value: v, ...(note ? { note } : {}), ...(f.newRow ? { newRow: true } : {}) });
@@ -182,7 +183,7 @@ export function buildPrintData(orderId: number): PrintData | null {
       measures: flow.filter((x) => x.f.type === "number").map((x) => ({ label: x.f.label, value: x.value })),
       photoIds: pics.filter((r) => !attachedKeys.has(r.fieldKey ?? "")).map((r) => r.id),
       refPhotoIds: pics.filter((r) => r.fieldKey && refKeys.has(r.fieldKey)).map((r) => r.id),
-      ...(slipCells.length + slipNotes.length > 0 && wantsTailor ? { slip: { cells: slipCells, cols: slipCols, notes: slipNotes, ...slipHead(item) } } : {}),
+      ...(slipCells.length + slipNotes.length > 0 && wantsTailor ? { slip: { cells: slipCells, cols: slipCols, notes: slipNotes, noteLabels: slipNoteLabels, ...slipHead(item) } } : {}),
       ...(karigar ? { karigar: { title: `${order.customerName} (${order.orderNumber})`, ...karigar } } : {}),
     });
   }

@@ -103,9 +103,10 @@ export function PrintSheets({ data, imgUrl }: { data: PrintData; imgUrl: (photoI
           ))}
         </div>
         {item.slip.notes.map((t, k) => (
-          <p key={k} className="mt-2 whitespace-pre-wrap text-xs leading-snug">
-            {t}
-          </p>
+          <div key={k} className="mt-3 border-t border-black pt-1" style={{ breakInside: "avoid" }}>
+            {item.slip!.noteLabels?.[k] && <p className="text-xs font-medium uppercase tracking-wide">{item.slip!.noteLabels[k]}</p>}
+            <p className="whitespace-pre-wrap text-base leading-snug">{t}</p>
+          </div>
         ))}
       </div>
     ) : null;
