@@ -91,6 +91,11 @@
   body {
     font-size: 12pt;
   }
+  /* The text scale is in rem, so a bigger root size makes the whole printout bigger and easier to read
+     (client: "too small to read when printed", 17 Nov 2026). Pictures are in mm and stay the same size. */
+  html {
+    font-size: 21px;
+  }
 }
 
 /* Text shows as written, with a capital first letter (owner's request). .normal-case stays for data such as a customer's name. */

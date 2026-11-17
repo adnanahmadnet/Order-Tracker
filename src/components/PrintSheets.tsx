@@ -35,7 +35,15 @@ export function PrintSheets({ data, imgUrl }: { data: PrintData; imgUrl: (photoI
     ...(slipItems.length ? [{ sheet: { key: "tailor-slips", title: "Tailor slips", items: slipItems }, slips: true }] : []),
   ];
 
-  const pics = (ids: number[], mm: number) => (
+  // inBox: pictures inside a measurement box share the box width in ONE row (each shrinks to fit), never one under the other
+  const pics = (ids: number[], mm: number, inBox = false) => inBox ? (
+    <div className="mt-1.5 flex flex-nowrap gap-1">
+      {ids.map((id) => (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img key={id} src={imgUrl(id)} alt="Picture" style={{ height: `${mm}mm`, minWidth: 0, flex: "1 1 0", objectFit: "contain", objectPosition: "left center" }} className="border border-neutral-400" />
+      ))}
+    </div>
+  ) : (
     <div className="mt-1.5 flex flex-wrap gap-2">
       {ids.map((id) => (
         // eslint-disable-next-line @next/next/no-img-element
@@ -70,7 +78,7 @@ export function PrintSheets({ data, imgUrl }: { data: PrintData; imgUrl: (photoI
   const tailorSlip = (item: SheetItem, key: string) =>
     item.slip ? (
       <div key={key} className="mb-6" style={{ breakInside: "avoid" }}>
-        <p className="border-t-2 border-dashed border-black pt-1 text-center text-[10px] uppercase tracking-widest">Cut here - tailor slip</p>
+        <p className="border-t-2 border-dashed border-black pt-1 text-center text-[0.625rem] uppercase tracking-widest">Cut here - tailor slip</p>
         <div className="mt-2 flex items-baseline justify-between text-sm">
           <div className="flex flex-wrap gap-x-12">
             <span className="font-bold">Customer Name: {data.customerName}</span>
@@ -88,7 +96,7 @@ export function PrintSheets({ data, imgUrl }: { data: PrintData; imgUrl: (photoI
                 <div key={`${c.label}-${k}`} className="px-1 text-center" style={{ width: `${100 / item.slip!.cols}%` }}>
                   <p className="text-sm underline">{c.label}</p>
                   <p className="mt-0.5 border-b border-black text-base leading-snug">{c.value}</p>
-                  {c.note && <p className="text-[11px] uppercase leading-tight">{c.note}</p>}
+                  {c.note && <p className="text-[0.6875rem] uppercase leading-tight">{c.note}</p>}
                 </div>
               ))}
             </div>
@@ -144,8 +152,8 @@ export function PrintSheets({ data, imgUrl }: { data: PrintData; imgUrl: (photoI
                           <>
                             <p className="text-xs">{c.label}</p>
                             <p className="text-lg font-medium leading-tight">{c.value}</p>
-                            {c.note && <p className="text-[10px] uppercase leading-tight">{c.note}</p>}
-                            {c.photoIds && c.photoIds.length > 0 && pics(c.photoIds, FIELD_CELL_PHOTO_MM)}
+                            {c.note && <p className="text-[0.625rem] uppercase leading-tight">{c.note}</p>}
+                            {c.photoIds && c.photoIds.length > 0 && pics(c.photoIds, FIELD_CELL_PHOTO_MM, true)}
                           </>
                         )}
                       </div>
@@ -184,7 +192,7 @@ export function PrintSheets({ data, imgUrl }: { data: PrintData; imgUrl: (photoI
       row(
         "karigar",
         <div className="mt-6">
-          <p className="border-t-2 border-dashed border-black pt-1 text-center text-[10px] uppercase tracking-widest">Cut here - karigar paper</p>
+          <p className="border-t-2 border-dashed border-black pt-1 text-center text-[0.625rem] uppercase tracking-widest">Cut here - karigar paper</p>
           {/* the paper the master writes out by hand for the karigar: the name, then short names (underlined) with the value under each */}
           <p className="mt-2 text-center text-lg font-medium">{kp.title}</p>
           <div className="mt-3 space-y-5">
@@ -217,7 +225,7 @@ export function PrintSheets({ data, imgUrl }: { data: PrintData; imgUrl: (photoI
         >
           {/* a table head is repeated at the top of every printed page by Chrome and Edge (the PDF does the same with
               `fixed`); Safari does not repeat it, which is why the Print button prints the PDF */}
-          <table className="w-full border-collapse">
+          <table className="w-full table-fixed border-collapse">
             <thead>
               <tr>
                 <td className="p-0">{header(sheet.title)}</td>
