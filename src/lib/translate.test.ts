@@ -3,6 +3,12 @@ import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 
 process.env.DATABASE_URL = ":memory:";
 
+// the free translator on this computer is a big model: the tests use a stand-in
+vi.mock("./local-translate", () => ({
+  localTranslationEnabled: () => process.env.LOCAL_TRANSLATE === "1",
+  localTranslate: vi.fn(async (text: string) => `local:${text}`),
+}));
+
 let t: typeof import("./translate");
 
 beforeAll(async () => {
@@ -14,6 +20,7 @@ beforeAll(async () => {
 afterEach(() => {
   vi.unstubAllGlobals();
   delete process.env.GOOGLE_TRANSLATE_API_KEY;
+  delete process.env.LOCAL_TRANSLATE;
 });
 
 const answer = (map: Record<string, string>) =>
@@ -76,5 +83,18 @@ describe("translate", () => {
     const many = Array.from({ length: t.MAX_TEXTS + 20 }, (_, i) => `Field name ${String.fromCharCode(97 + (i % 26))}${String.fromCharCode(97 + Math.floor(i / 26))}`);
     await t.translateTexts(many, "ur");
     expect(bodyOf(f).q).toHaveLength(t.MAX_TEXTS);
+  });
+
+  it("uses the translator on this computer when there is no key and LOCAL_TRANSLATE=1, and saves the answer", async () => {
+    process.env.LOCAL_TRANSLATE = "1";
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    expect(t.translationEnabled()).toBe(true);
+    const list = ["Collar Embroidery", "Thin Cuff"].join(String.fromCharCode(10)); // two lines
+    expect(await t.translateTexts([list], "hi")).toEqual({ [list]: `local:${list}` });
+    expect(fetchMock).not.toHaveBeenCalled();
+    delete process.env.LOCAL_TRANSLATE;
+    // saved: found again with the translator off
+    expect(await t.translateTexts([list], "hi")).toEqual({ [list]: `local:${list}` });
   });
 });

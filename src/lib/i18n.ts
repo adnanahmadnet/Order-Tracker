@@ -36,9 +36,13 @@ export function isTranslatable(s: string): boolean {
   return true;
 }
 
-/** One text the way it is sent to the service and saved: spaces tidied. */
+/** One text the way it is sent to the service and saved: spaces tidied, the line breaks kept (a list of lines stays a list). */
 export function cleanSource(text: string): string {
-  return text.trim().replace(/\s+/g, " ");
+  return text
+    .trim()
+    .replace(/[^\S\n]+/g, " ")
+    .replace(/ ?\n ?/g, "\n")
+    .replace(/\n{2,}/g, "\n");
 }
 
 export function fillNumbers(tpl: string, nums: string[]): string {

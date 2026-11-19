@@ -50,7 +50,8 @@ describe("urdu", () => {
     for (const t of ["1234A", "12", "a", "", "https://example.com/x", "me@example.com", "#21", "5 / 7"]) expect(isTranslatable(t)).toBe(false);
     expect(isTranslatable("Sleeve length")).toBe(true);
     expect(isTranslatable("x".repeat(501))).toBe(false);
-    expect(cleanSource("  Sleeve \n  length ")).toBe("Sleeve length");
+    expect(cleanSource("  Sleeve   length ")).toBe("Sleeve length");
+    expect(cleanSource("  Sleeve \n  length ")).toBe("Sleeve\nlength"); // a list of lines stays a list
   });
 
   it("has an Urdu month for every month the app prints", () => {
