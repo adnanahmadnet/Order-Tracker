@@ -4,6 +4,7 @@ import { requireAdmin } from "@/lib/admin-auth";
 import { cleanMasterIds } from "@/lib/assign";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { pretranslateOrder } from "@/lib/pretranslate";
 import { addNotePictures, removeItemPicture, removeNotePicture } from "@/lib/order-notes";
 import { addOrderPdf, chosenPdfs, listOrderFiles, pdfProblem, removeOrderFile } from "@/lib/order-files";
 import { checkDesignNumbers,
@@ -145,6 +146,7 @@ ${v}` : v; // checkboxes send several
       await savePictures(f, orderId, it.id, String(it.id), it.snapshot.fields);
       await chooseDesign(f, orderId, it.id, String(it.id), it.snapshot.fields);
     }
+    pretranslateOrder(orderId); // the master's Urdu, Bengali and Hindi get ready in the background
     if (!wasSent) {
       if (send && sendOrder(orderId)) redirect(`/admin/customers?notify=new:${orderId}`);
       redirect(`/admin/customers?draft=${orderId}`); // Save draft: back to the list
@@ -173,6 +175,7 @@ ${v}` : v; // checkboxes send several
       await savePictures(f, newId, saved[n].id, key, saved[n].snapshot.fields);
       await chooseDesign(f, newId, saved[n].id, key, saved[n].snapshot.fields);
     }
+    pretranslateOrder(newId);
     redirect(send ? `/admin/customers?notify=new:${newId}` : `/admin/customers?draft=${newId}`);
   }
   redirect(orderId ? `/admin/customers?notify=updated:${orderId}` : "/admin/customers");
