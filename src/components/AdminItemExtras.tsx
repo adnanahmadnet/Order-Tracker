@@ -148,6 +148,17 @@ export function AdminItemExtras({
                     </div>
                   </details>
                 </div>
+                {s.status === "done" && s.lastDone && (
+                  <details className="text-base">
+                    <summary className="inline-flex min-h-11 cursor-pointer items-center underline">Finished by mistake?</summary>
+                    <div className="mt-1 space-y-2">
+                      <p>Opens this step again and locks the next one. The history keeps both.</p>
+                      <button type="submit" form={STEP_FORM} name="step" value={`${item.id}:${s.key}:undo`} className={btnSecondary}>
+                        Reopen this step
+                      </button>
+                    </div>
+                  </details>
+                )}
                 {s.status === "open" && (
                   <div className="space-y-1">
                     <button

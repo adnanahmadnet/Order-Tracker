@@ -37,6 +37,9 @@ export type StageView = {
   photo: PhotoRule;
   status: StageStatus;
   completedAt: Date | null;
+  /** who finished it (a master can only take back his own), and whether it is the last step finished (only that one can be taken back) */
+  completedBy: "master" | "admin" | null;
+  lastDone: boolean;
   latestPhoto: StagePhoto | null;
   /** every image sent for this step, oldest first (an optional step can have several) */
   allPhotos: { id: number; status: "pending" | "approved" | "rejected" }[];
@@ -104,6 +107,7 @@ export function itemStageViews(itemId: number, now: Date = new Date()): StageVie
     .all()
     .filter((p) => p.uploadedAt.getTime() >= round);
   const pictureKeys = pictureKeysOf(db, itemId);
+  const lastDonePosition = Math.max(0, ...rows.filter((r) => r.status === "done").map((r) => r.position));
   return rows.map((r) => {
     const def = defs.find((d) => d.key === r.stageKey);
     const latest = stagePhotos.find((p) => p.stageKey === r.stageKey) ?? null;
@@ -118,6 +122,8 @@ export function itemStageViews(itemId: number, now: Date = new Date()): StageVie
       photo: rule,
       status: r.status,
       completedAt: r.completedAt,
+      completedBy: r.status === "done" ? r.completedBy : null,
+      lastDone: r.status === "done" && r.position === lastDonePosition,
       latestPhoto: latest ? { id: latest.id, status: latest.status, comment: latest.comment } : null,
       allPhotos: stagePhotos
         .filter((p) => p.stageKey === r.stageKey)

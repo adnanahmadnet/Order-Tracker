@@ -31,6 +31,7 @@ export const orders = sqliteTable("orders", {
   linkedDesignNumber: text("linked_design_number"),
   myDueDate: text("my_due_date").notNull(), // YYYY-MM-DD, admin only
   karigarDueDate: text("karigar_due_date").notNull(), // YYYY-MM-DD
+  eventDate: text("event_date"), // YYYY-MM-DD, the customer's event (wedding...); optional, admin only like myDueDate
   masterId: integer("master_id")
     .notNull()
     .references(() => masters.id),
@@ -260,6 +261,21 @@ export const photos = sqliteTable("photos", {
   reviewedAt: ts("reviewed_at"),
 });
 
+// Videos attached to an order (for example the customer's reference video). Kept apart from the PDFs: a video never counts as "an order PDF is attached".
+export const orderVideos = sqliteTable("order_videos", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  orderId: integer("order_id")
+    .notNull()
+    .references(() => orders.id),
+  name: text("name").notNull(),
+  fileKey: text("file_key").notNull(),
+  bytes: integer("bytes").notNull(),
+  mime: text("mime").notNull(), // video/mp4, video/quicktime or video/webm
+  uploadedAt: ts("uploaded_at")
+    .notNull()
+    .$defaultFn(() => new Date()),
+});
+
 // PDF files attached to an order (for example the customer's own order form), so the details need not be typed in.
 export const orderFiles = sqliteTable("order_files", {
   id: integer("id").primaryKey({ autoIncrement: true }),
@@ -311,7 +327,7 @@ export const shipmentItems = sqliteTable("shipment_items", {
 
 // ---------------------------------------------------------------- production history
 
-export const EVENT_KINDS = ["confirmed", "done", "note", "instruction", "image", "shipped", "remade"] as const;
+export const EVENT_KINDS = ["confirmed", "done", "note", "instruction", "image", "shipped", "remade", "reopened"] as const;
 export type EventKind = (typeof EVENT_KINDS)[number];
 
 // The history of an order: who did what and when. Never edited or deleted.

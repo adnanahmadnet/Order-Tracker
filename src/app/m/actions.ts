@@ -8,6 +8,7 @@ import { clearFailures, isLocked, recordFailure, verifyPin } from "@/lib/pin";
 import { masterComplete, masterSaveFields } from "@/lib/orders";
 import { requireMaster } from "@/lib/master-session";
 import { completeStage } from "@/lib/stages";
+import { undoStage } from "@/lib/undo-step";
 import { addStageNote, confirmOrder } from "@/lib/history";
 import { saveShipmentItems, startShipment, submitShipment } from "@/lib/shipping";
 
@@ -49,6 +50,16 @@ export async function completeStageAction(f: FormData) {
   if (!master) redirect(`/m/${token}`);
   const res = completeStage({ by: "master", masterId: master.id }, Number(f.get("itemId")), String(f.get("stageKey") ?? ""));
   redirect(`/m/${token}/orders/${orderId}${res.ok ? "" : `?e=${res.reason}`}`);
+}
+
+/** Takes back the step he finished by mistake (only the last one he finished, never after the item was sent). */
+export async function undoStageAction(f: FormData) {
+  const token = String(f.get("token") ?? "");
+  const orderId = Number(f.get("orderId"));
+  const master = await requireMaster(token);
+  if (!master) redirect(`/m/${token}`);
+  const res = undoStage({ by: "master", masterId: master.id }, Number(f.get("itemId")), String(f.get("stageKey") ?? ""));
+  redirect(`/m/${token}/orders/${orderId}${res.ok ? "" : "?e=undo-no"}`);
 }
 
 // ---------------------------------------------------------------- shipping

@@ -185,4 +185,29 @@ describe("orders", () => {
     expect(o.masterDashboard(a).active.map((x) => x.customerName).sort()).toEqual(["Not ready", "Ready"]);
     expect(o.masterOrder(a, draft)).not.toBeNull();
   });
+
+  it("keeps an optional event date for the office and never gives it to a master", () => {
+    const a = m.createMaster({ name: "Event master", pin: "4321" });
+    const withEvent = o.createOrder({ ...input(a, "Wedding"), eventDate: "2099-06-01" });
+    const without = o.createOrder(input(a, "No event"));
+    const blank = o.createOrder({ ...input(a, "Blank event"), eventDate: " " });
+
+    expect(o.getOrder(withEvent)!.eventDate).toBe("2099-06-01");
+    expect(o.getOrder(without)!.eventDate).toBeNull();
+    expect(o.getOrder(blank)!.eventDate).toBeNull();
+    expect(o.listAdminOrders({ view: "active" }).find((x) => x.id === withEvent)!.eventDate).toBe("2099-06-01");
+
+    // the master sees neither the date nor a trace of it
+    expect(JSON.stringify(o.masterOrder(a, withEvent))).not.toContain("2099-06-01");
+    expect(o.masterOrder(a, withEvent)).not.toHaveProperty("eventDate");
+    expect(JSON.stringify(o.masterDashboard(a))).not.toContain("2099-06-01");
+
+    // it can be changed and cleared, and changing it does not mark the order Updated for the master
+    const before = o.getOrder(withEvent)!.changedForMasterAt;
+    o.updateOrder(withEvent, { ...input(a, "Wedding"), eventDate: "2099-07-01" });
+    expect(o.getOrder(withEvent)!.eventDate).toBe("2099-07-01");
+    expect(o.getOrder(withEvent)!.changedForMasterAt).toEqual(before);
+    o.updateOrder(withEvent, { ...input(a, "Wedding"), eventDate: "" });
+    expect(o.getOrder(withEvent)!.eventDate).toBeNull();
+  });
 });

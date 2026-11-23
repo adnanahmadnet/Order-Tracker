@@ -17,6 +17,7 @@ import { orderHistory } from "@/lib/history";
 import { Icon } from "@/components/Icon";
 import { stepIconName } from "@/lib/step-icon";
 import { listOrderFiles } from "@/lib/order-files";
+import { listOrderVideos } from "@/lib/order-videos";
 import { cartCandidates } from "@/lib/shipping";
 import { remakeCount } from "@/lib/remake";
 import { itemStatesOfOrder, itemStatesSummary } from "@/lib/item-search";
@@ -54,6 +55,7 @@ export default async function MasterOrder({
   const daysLeft = Math.round((new Date(dy, dm - 1, dd).getTime() - new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()) / 86_400_000);
 
   const orderPdfs = listOrderFiles(order.id);
+  const orderVideos = listOrderVideos(order.id);
 
   return (
     <div className="mx-auto w-full max-w-3xl space-y-4">
@@ -274,9 +276,32 @@ export default async function MasterOrder({
         </div>
       )}
 
+      {/* the video is at the bottom, after the items, steps and notes: the master's work comes first */}
+      {orderVideos.length > 0 && (
+        <section className="panel space-y-3">
+          <h2 className="text-xl font-medium">Video</h2>
+          {orderVideos.map((v) => (
+            <div key={v.id} className="space-y-1">
+              {/* preload="none": nothing is downloaded until the master taps play (weak internet) */}
+              <video
+                controls
+                playsInline
+                preload="none"
+                className="aspect-video w-full rounded-xl bg-black"
+                src={`/api/m/${token}/orders/${order.id}/videos/${v.id}`}
+              />
+              <p className="break-words text-sm text-muted">
+                <bdi translate="no">{v.name}</bdi>
+              </p>
+            </div>
+          ))}
+        </section>
+      )}
+
       {e === "note-empty" && <p role="alert" className="alert alert-error text-lg font-medium">Write something in the note first.</p>}
       {e === "not-confirmed" && <p role="alert" className="alert alert-error text-lg font-medium">Press &quot;I have seen this order&quot; first.</p>}
-      {e && e !== "not-active" && e !== "note-empty" && e !== "not-confirmed" && (
+      {e === "undo-no" && <p role="alert" className="alert alert-error text-lg font-medium">This step cannot be undone now. Ask the office.</p>}
+      {e && e !== "not-active" && e !== "note-empty" && e !== "not-confirmed" && e !== "undo-no" && (
         <p role="alert" className="alert alert-error text-lg font-medium">
           {e === "needs-photo"
             ? "This step needs an approved photo first."

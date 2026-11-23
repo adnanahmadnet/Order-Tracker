@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache";
 import { pretranslateOrder } from "@/lib/pretranslate";
 import { addNotePictures, removeItemPicture, removeNotePicture } from "@/lib/order-notes";
 import { addOrderPdf, chosenPdfs, listOrderFiles, pdfProblem, removeOrderFile } from "@/lib/order-files";
+import { addOrderVideo, chosenVideos, removeOrderVideo, videoProblem } from "@/lib/order-videos";
 import { checkDesignNumbers,
   addItem,
   createOrder,
@@ -26,6 +27,7 @@ import { setSetting } from "@/lib/settings";
 import { cleanValues, itemLabel, missingFields, noteKey, type NewItem } from "@/lib/items";
 import { templateForItem } from "@/lib/templates";
 import { addReferencePhoto, completeStage, reviewPhoto } from "@/lib/stages";
+import { undoStage } from "@/lib/undo-step";
 import { storeUpload } from "@/lib/photo-upload";
 import { attachDesign, designByName } from "@/lib/designs";
 import { addStageNote, setInstruction } from "@/lib/history";
@@ -44,6 +46,7 @@ function parseOrder(f: FormData): OrderInput {
     customerName: str(f, "customerName"),
     myDueDate: str(f, "myDueDate"),
     karigarDueDate: str(f, "karigarDueDate"),
+    eventDate: str(f, "eventDate"), // optional
     masterId: masterIds[0] ?? 0,
     masterIds,
     details: str(f, "details"),
@@ -52,6 +55,7 @@ function parseOrder(f: FormData): OrderInput {
   if (!input.customerName || !DATE.test(input.myDueDate) || !DATE.test(input.karigarDueDate) || !input.masterId) {
     throw new Error("Please fill customer name, both due dates and choose at least one master.");
   }
+  if (input.eventDate && !DATE.test(input.eventDate)) throw new Error("The event date is not a valid date.");
   return input;
 }
 
@@ -122,8 +126,15 @@ ${v}` : v; // checkboxes send several
     if (bad) return { nonce, missing: [], missingKeys: [], values, error: bad };
   }
   const hasPdf = pdfs.length > 0 || (orderId ? listOrderFiles(orderId).length > 0 : false);
+  // videos chosen in the form (50 MB each, a real MP4, MOV or WebM); they never count as an order PDF
+  const videos = chosenVideos(f);
+  for (const file of videos) {
+    const bad = await videoProblem(file);
+    if (bad) return { nonce, missing: [], missingKeys: [], values, error: bad };
+  }
   const savePdfs = async (id: number) => {
     for (const file of pdfs) await addOrderPdf(id, file);
+    for (const file of videos) await addOrderVideo(id, file);
   };
 
   const missing: string[] = [];
@@ -198,6 +209,13 @@ export async function removeNotePictureAction(orderId: number, photoId: number) 
 export async function removeOrderFileAction(orderId: number, fileId: number) {
   await requireAdmin();
   await removeOrderFile(Number(orderId), Number(fileId));
+  revalidatePath(`/admin/orders/${orderId}`);
+}
+
+/** Takes a video off an order (the cross next to it). */
+export async function removeOrderVideoAction(orderId: number, videoId: number) {
+  await requireAdmin();
+  await removeOrderVideo(Number(orderId), Number(videoId));
   revalidatePath(`/admin/orders/${orderId}`);
 }
 
@@ -323,7 +341,8 @@ export async function stepAdminAction(f: FormData) {
   await requireAdmin();
   const orderId = num(f, "orderId");
   const [itemId, stageKey, mode] = str(f, "step").split(":");
-  const res = completeStage({ by: "admin", force: mode === "force" }, Number(itemId), stageKey ?? "");
+  // "undo" opens the last finished step again (a step finished by mistake)
+  const res = mode === "undo" ? undoStage({ by: "admin" }, Number(itemId), stageKey ?? "") : completeStage({ by: "admin", force: mode === "force" }, Number(itemId), stageKey ?? "");
   redirect(`/admin/orders/${orderId}${res.ok ? "" : `?e=${res.reason}`}`);
 }
 

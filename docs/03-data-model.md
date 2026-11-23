@@ -21,6 +21,7 @@ Design goal: the **only built-in order fields** are the order number (auto), the
 | order_number | human-friendly number, primary goal for Anas |
 | customer_name | **not unique** (many customers share a name) |
 | my_due_date | **admin-only**; Anas's real delivery date |
+| event_date | optional, **admin-only**; the customer's event (wedding...), YYYY-MM-DD, so Anas sees how much time is left (added 21 Nov 2026, migration 0022) |
 | karigar_due_date | shown to the master |
 | master_id | assigned master |
 | priority_position | integer sequence; lower = more urgent; only Admin changes it |
@@ -231,3 +232,6 @@ The accountant's invoice and the handover to the shipping company are handled by
 
 ## text_translations (17 Nov 2026, migration 0019; it replaces `translations` from 0018)
 The master's Urdu and Bengali for text the office typed. `lang` (ur, bn or hi), `source` (the English text, spaces tidied), `translated`, `created_at`; primary key (`lang`, `source`). Each text is translated once per language and kept. The fixed words of the app are not here; they are written by hand in `src/lib/urdu.ts`, `src/lib/bengali.ts` and `src/lib/hindi.ts`.
+
+## order_videos (23 Nov 2026, migration 0023)
+Videos attached to an order (the Order video box): `id`, `order_id`, `name`, `file_key` (under `orders/<id>/` in the uploads folder), `bytes`, `mime` (video/mp4, video/quicktime or video/webm), `uploaded_at`. Apart from `order_files` (the PDFs). Also `orders.event_date` (22 Nov 2026, migration 0022): the optional, admin-only event date.

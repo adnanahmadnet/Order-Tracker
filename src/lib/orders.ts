@@ -13,6 +13,7 @@ export type OrderInput = {
   customerName: string;
   myDueDate: string;
   karigarDueDate: string;
+  eventDate?: string | null; // the customer's event; admin only, never shown to a master
   masterId: number; // the main master (the first one)
   masterIds?: number[]; // every master of the order, main one first; leave out for just masterId
   details: string;
@@ -37,7 +38,7 @@ function splitMasters(input: OrderInput) {
   const { masterIds: given, designNumber, ...rest } = input;
   const ids = cleanMasterIds(given?.length ? given : [input.masterId]);
   return {
-    cols: { ...rest, masterId: ids[0] ?? input.masterId, designNumber: cleanDesignNumber(designNumber) },
+    cols: { ...rest, eventDate: input.eventDate?.trim() || null, masterId: ids[0] ?? input.masterId, designNumber: cleanDesignNumber(designNumber) },
     ids: ids.length ? ids : [input.masterId],
   };
 }

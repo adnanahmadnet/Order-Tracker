@@ -17,6 +17,7 @@ export type HistoryWords = {
   note: (who: string, stage: string, of: string) => string;
   instruction: (who: string, stage: string, of: string) => string;
   image: (who: string, stage: string, of: string) => string;
+  reopened: (who: string, stage: string, of: string) => string;
 };
 
 export type Pack = {
@@ -60,6 +61,7 @@ const H = {
   note: new RegExp(`^${WHO} added a note on (.+?)${OF}`),
   instruction: new RegExp(`^${WHO} left an instruction for (.+?)${OF}`),
   image: new RegExp(`^${WHO} added an image to (.+?)${OF}`),
+  reopened: new RegExp(`^${WHO} reopened (.+?)${OF}`),
 };
 
 /** A translator for one language: the text in that language from the hand-written list, or null when it is not there. Spaces around it are kept. */
@@ -104,6 +106,8 @@ export function makeTranslator(pack: Pack): (text: string) => string | null {
     if ((m = H.note.exec(text))) return w.note(part(m[1]), part(m[2]), m[3] ? part(m[3]) : "");
     if ((m = H.instruction.exec(text))) return w.instruction(part(m[1]), part(m[2]), m[3] ? part(m[3]) : "");
     if ((m = H.image.exec(text))) return w.image(part(m[1]), part(m[2]), m[3] ? part(m[3]) : "");
+    if ((m = H.reopened.exec(text))) return w.reopened(part(m[1]), part(m[2]), m[3] ? part(m[3]) : "");
+    if ((m = H.reopened.exec(text))) return w.reopened(part(m[1]), part(m[2]), m[3] ? part(m[3]) : "");
 
     // ": Cutting" after "To make"
     const colon = /^: (.+)$/.exec(text);

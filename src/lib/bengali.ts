@@ -68,6 +68,9 @@ export const BENGALI: Record<string, string> = {
   "Karigar due": "কারিগরের শেষ তারিখ",
   Loading: "লোড হচ্ছে",
   "Mark complete": "সম্পন্ন করুন",
+  "Undo this step": "এই ধাপ ফিরিয়ে নিন",
+  "Pressed Mark complete by mistake?": "ভুল করে সম্পন্ন চাপ দিয়েছেন?",
+  "This step cannot be undone now. Ask the office.": "এই ধাপ এখন ফেরানো যাবে না। অফিসকে বলুন।",
   Master: "মাস্টার",
   Measurements: "মাপ",
   "My pending work": "আমার বাকি কাজ",
@@ -95,6 +98,7 @@ export const BENGALI: Record<string, string> = {
   "Or choose files": "অথবা ফাইল বেছে নিন",
   Order: "অর্ডার",
   "Order PDF": "অর্ডার পিডিএফ",
+  Video: "ভিডিও",
   "Packed items": "প্যাক করা আইটেম",
   "Packed items photo": "প্যাক করা আইটেমের ছবি",
   Paste: "পেস্ট",
@@ -348,6 +352,7 @@ const bengaliPack: Pack = {
     note: (who, stage, of) => `${who} ${stage}-এ নোট লিখেছে${of ? ` (${of})` : ""}`,
     instruction: (who, stage, of) => `${who} ${stage}-এর জন্য নির্দেশ দিয়েছে${of ? ` (${of})` : ""}`,
     image: (who, stage, of) => `${who} ${stage}-এ ছবি যোগ করেছে${of ? ` (${of})` : ""}`,
+    reopened: (who, stage, of) => `${who} ${stage} আবার খুলেছে${of ? ` (${of})` : ""}`,
   },
 };
 

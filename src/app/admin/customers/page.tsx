@@ -2,7 +2,7 @@ import Link from "next/link";
 import { listAdminOrders } from "@/lib/orders";
 import { listMasters } from "@/lib/masters";
 import { syncActiveItems } from "@/lib/item-sync";
-import { BAND_CLASS, BAND_LABEL } from "@/lib/colour";
+import { BAND_CLASS, BAND_LABEL, daysLeftText, daysUntil } from "@/lib/colour";
 import { EmptyState, PageHeader, Ruler, btnPrimary, btnSecondary, card, fmtDate, fmtDay, input } from "@/components/ui";
 import { Icon } from "@/components/Icon";
 import { WhatsAppNotice } from "@/components/WhatsAppNotice";
@@ -241,6 +241,17 @@ export default async function Customers({
                     <p className="font-medium">{fmtDay(o.myDueDate)}</p>
                   </div>
                 </div>
+                {o.eventDate && (
+                  <div className={`${tile} flex items-center gap-3 border-rule bg-paper-3/60`}>
+                    <Icon name="date" className="h-5 w-5 shrink-0 text-muted" />
+                    <div>
+                      <p className={`${tileLabel} text-muted`}>Event</p>
+                      <p className="font-medium">
+                        {fmtDay(o.eventDate)} <span className="text-sm font-normal text-muted">({daysLeftText(daysUntil(o.eventDate))})</span>
+                      </p>
+                    </div>
+                  </div>
+                )}
                 <div className={`${tile} flex items-center gap-3 ${late ? "border-bad/50 bg-white" : "border-rule bg-paper-3/60"} ${byDue ? "ring-2 ring-ink/70" : ""}`}>
                   <span aria-hidden className="relative flex h-2.5 w-2.5 shrink-0">
                     {late && <span className="absolute inline-flex h-full w-full rounded-full bg-bad opacity-70 motion-safe:animate-ping" />}

@@ -10,6 +10,14 @@ export function daysUntil(dateStr: string, now: Date = new Date()): number {
   return Math.round((due - today) / 86_400_000);
 }
 
+/** "120 days left", "Tomorrow", "Today", "3 days ago" for the office's event date. */
+export function daysLeftText(days: number): string {
+  if (days === 0) return "today";
+  if (days === 1) return "tomorrow";
+  if (days === -1) return "yesterday";
+  return days > 0 ? `${days} days left` : `${-days} days ago`;
+}
+
 /**
  * Only the deadline (the Karigar due date) decides this, never the place in the list: moving an order up or down
  * does not change its tag.

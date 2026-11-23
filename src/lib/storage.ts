@@ -1,6 +1,7 @@
 import { randomBytes } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+import { Readable } from "node:stream";
 import sharp from "sharp";
 
 // All file access goes through this module (save / get / remove),
@@ -28,6 +29,41 @@ export async function get(key: string): Promise<Buffer | null> {
     return await fs.promises.readFile(safe(key));
   } catch {
     return null;
+  }
+}
+
+/** The size of a stored file in bytes, or null when it is not there. */
+export async function sizeOf(key: string): Promise<number | null> {
+  try {
+    return (await fs.promises.stat(safe(key))).size;
+  } catch {
+    return null;
+  }
+}
+
+/** A stored file as a stream (for a plain, non-Range request of a big file), or null when it is not there. */
+export function streamOf(key: string): ReadableStream<Uint8Array> | null {
+  try {
+    const full = safe(key);
+    if (!fs.existsSync(full)) return null;
+    return Readable.toWeb(fs.createReadStream(full)) as ReadableStream<Uint8Array>;
+  } catch {
+    return null;
+  }
+}
+
+/** Bytes start..end (both included) of a stored file: a video is sent in pieces, never read whole. */
+export async function getRange(key: string, start: number, end: number): Promise<Buffer | null> {
+  let fh: fs.promises.FileHandle | null = null;
+  try {
+    fh = await fs.promises.open(safe(key), "r");
+    const buf = Buffer.alloc(end - start + 1);
+    const { bytesRead } = await fh.read(buf, 0, buf.length, start);
+    return buf.subarray(0, bytesRead);
+  } catch {
+    return null;
+  } finally {
+    await fh?.close();
   }
 }
 

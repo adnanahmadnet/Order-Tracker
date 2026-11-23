@@ -162,5 +162,7 @@ export function describeEvent(h: HistoryLine): string {
       return `${h.who} sent ${h.item ?? "an item"}`;
     case "remade":
       return `${h.who} sent ${h.item ?? "an item"} back for a remake`;
+    case "reopened":
+      return `${h.who} reopened ${h.stage ?? "a step"}${of}`;
   }
 }

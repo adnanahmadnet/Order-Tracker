@@ -24,6 +24,7 @@ Only **two levels** (decided in the meeting): Admin and Master.
 |---|---|---|
 | Create / edit orders | Yes | No |
 | See "My due date" | Yes | **No** |
+| See "Event date" | Yes | **No** |
 | See "Karigar due date" | Yes | Yes |
 | Assign an order to a master | Yes | No |
 | Reorder priority | Yes | **No** |

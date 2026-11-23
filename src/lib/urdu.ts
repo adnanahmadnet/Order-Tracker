@@ -68,6 +68,9 @@ export const URDU: Record<string, string> = {
   "Karigar due": "کاریگر کی آخری تاریخ",
   Loading: "لوڈ ہو رہا ہے",
   "Mark complete": "مکمل کریں",
+  "Undo this step": "یہ قدم واپس کریں",
+  "Pressed Mark complete by mistake?": "غلطی سے مکمل دبا دیا؟",
+  "This step cannot be undone now. Ask the office.": "یہ قدم اب واپس نہیں ہو سکتا۔ دفتر سے کہیں۔",
   Master: "ماسٹر",
   Measurements: "ناپ",
   "My pending work": "میرا باقی کام",
@@ -95,6 +98,7 @@ export const URDU: Record<string, string> = {
   "Or choose files": "یا فائلیں چنیں",
   Order: "آرڈر",
   "Order PDF": "آرڈر پی ڈی ایف",
+  Video: "ویڈیو",
   "Packed items": "پیک شدہ آئٹمز",
   "Packed items photo": "پیک شدہ آئٹمز کی تصویر",
   Paste: "پیسٹ",
@@ -353,6 +357,7 @@ const urduPack: Pack = {
     note: (who, stage, of) => `${who} نے ${stage} پر نوٹ لکھا${of ? ` (${of})` : ""}`,
     instruction: (who, stage, of) => `${who} نے ${stage} کے لیے ہدایت دی${of ? ` (${of})` : ""}`,
     image: (who, stage, of) => `${who} نے ${stage} میں تصویر لگائی${of ? ` (${of})` : ""}`,
+    reopened: (who, stage, of) => `${who} نے ${stage} دوبارہ کھول دیا${of ? ` (${of})` : ""}`,
   },
 };
 

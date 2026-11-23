@@ -12,6 +12,7 @@ import { listMasters } from "@/lib/masters";
 import { pickerGroups } from "@/lib/templates";
 import type { EditorItem } from "@/lib/editor-state";
 import { listOrderFiles } from "@/lib/order-files";
+import { listOrderVideos } from "@/lib/order-videos";
 import { notePhotos } from "@/lib/order-notes";
 import { NotePictures } from "@/components/NotePictures";
 import { displayValue, fieldProgress, isDisplayOnly, missingFields } from "@/lib/items";
@@ -212,6 +213,7 @@ export default async function EditOrder({
             formId="order-form"
             designs={listDesigns({ activeOnly: true })}
             pdfs={listOrderFiles(order.id).map((p) => ({ id: p.id, name: p.name, bytes: p.bytes }))}
+            videos={listOrderVideos(order.id).map((v) => ({ id: v.id, name: v.name, bytes: v.bytes }))}
             afterMasters={<AddItemBox orderId={order.id} options={templates.map((t) => ({ templateId: t.templateId, label: `${t.group} > ${t.name}` }))} />}
           />
 
@@ -284,6 +286,12 @@ export default async function EditOrder({
               <span className="block text-muted">My due date</span>
               <b className="text-lg">{order.myDueDate}</b>
             </p>
+            {order.eventDate && (
+              <p>
+                <span className="block text-muted">Event date</span>
+                <b className="text-lg">{order.eventDate}</b>
+              </p>
+            )}
             <p>
               <span className="block text-muted">Karigar due date</span>
               <b className="text-lg">{order.karigarDueDate}</b>

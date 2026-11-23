@@ -12,6 +12,7 @@ import { PictureStore } from "./PictureInput";
 import { NotePictures } from "./NotePictures";
 import { RemoveItemButton } from "./RemoveItemButton";
 import { OrderPdfBox, type PdfRow } from "./OrderPdfBox";
+import { OrderVideoBox, type VideoRow } from "./OrderVideoBox";
 import { FieldProgress } from "./FieldProgress";
 import { DesignNumberSelect, type DesignOption } from "./DesignPicker";
 import { Icon } from "./Icon";
@@ -29,6 +30,7 @@ type Base = {
   customerName?: string;
   myDueDate?: string;
   karigarDueDate?: string;
+  eventDate?: string | null;
   masterId?: number;
   masterIds?: number[]; // every master of the order
   details?: string;
@@ -45,10 +47,12 @@ export function OrderEditor({
   formId,
   afterMasters,
   pdfs = [],
+  videos = [],
   designs = [],
 }: {
   designs?: DesignOption[]; // the office's design library: the Design number box of an item is a dropdown of it
   pdfs?: PdfRow[]; // PDFs already attached to this customer
+  videos?: VideoRow[]; // videos already attached to this customer
   action: (prev: EditorState, f: FormData) => Promise<EditorState>;
   masters: Master[];
   base?: Base;
@@ -167,6 +171,9 @@ export function OrderEditor({
           <Field label="My due date (only you see this)" required upper>
             <input type="date" name="myDueDate" required defaultValue={pick("myDueDate", base.myDueDate)} className={input} />
           </Field>
+          <Field label="Event date (only you see this)" upper>
+            <input type="date" name="eventDate" defaultValue={pick("eventDate", base.eventDate ?? "")} className={input} />
+          </Field>
           <div>
             <Field label="Karigar due date (master sees this)" required upper>
               <input
@@ -189,7 +196,11 @@ export function OrderEditor({
 
       {afterMasters}
 
-      <OrderPdfBox orderId={orderId} files={pdfs} />
+      {/* the PDF and the video side by side on a wide screen, one under the other on a phone */}
+      <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-2">
+        <OrderPdfBox orderId={orderId} files={pdfs} />
+        <OrderVideoBox orderId={orderId} files={videos} />
+      </div>
 
       {picker && (
         <section className="space-y-3">

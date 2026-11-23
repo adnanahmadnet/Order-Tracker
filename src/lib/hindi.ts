@@ -68,6 +68,9 @@ export const HINDI: Record<string, string> = {
   "Karigar due": "कारीगर की आखिरी तारीख",
   Loading: "लोड हो रहा है",
   "Mark complete": "पूरा करें",
+  "Undo this step": "यह स्टेप वापस करें",
+  "Pressed Mark complete by mistake?": "गलती से पूरा करें दबा दिया?",
+  "This step cannot be undone now. Ask the office.": "यह स्टेप अब वापस नहीं हो सकता। ऑफिस को बताएँ।",
   Master: "मास्टर",
   Measurements: "नाप",
   "My pending work": "मेरा बाकी काम",
@@ -95,6 +98,7 @@ export const HINDI: Record<string, string> = {
   "Or choose files": "या फाइलें चुनें",
   Order: "ऑर्डर",
   "Order PDF": "ऑर्डर पीडीएफ",
+  Video: "वीडियो",
   "Packed items": "पैक किए आइटम",
   "Packed items photo": "पैक किए आइटम की फोटो",
   Paste: "पेस्ट",
@@ -348,6 +352,7 @@ const hindiPack: Pack = {
     note: (who, stage, of) => `${who} ने ${stage} पर नोट लिखा${of ? ` (${of})` : ""}`,
     instruction: (who, stage, of) => `${who} ने ${stage} के लिए निर्देश दिया${of ? ` (${of})` : ""}`,
     image: (who, stage, of) => `${who} ने ${stage} में फोटो जोड़ी${of ? ` (${of})` : ""}`,
+    reopened: (who, stage, of) => `${who} ने ${stage} फिर से खोला${of ? ` (${of})` : ""}`,
   },
 };
 

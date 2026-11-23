@@ -63,6 +63,7 @@ const PATHS: Record<string, string> = {
   eye: "M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12ZM15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z",
   receipt: "M6 3.5h12v17l-2.5-1.5-2 1.5-1.5-1.5-1.5 1.5-2-1.5ZM9 8.5h6M9 12h6M9 15.5h3",
   remake: "M20.5 12a8.5 8.5 0 1 1-2.5-6M20.5 4v4.5H16M12 8v4.2l2.6 1.6",
+  video: "M3.5 7h11v10h-11zM14.5 10.5 20.5 7.5v9l-6-3z",
 };
 
 export function Icon({ name, className = "h-5 w-5" }: { name: keyof typeof PATHS | string; className?: string }) {

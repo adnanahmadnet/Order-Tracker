@@ -14,7 +14,7 @@ All screens are mobile-first, with big buttons. The office side is English only;
 - Filters: master, status. Button: New order.
 
 ### A2. Create / edit order
-1. Enter customer name, order number, **My due date**, **Karigar due date**, and assigned master.
+1. Enter customer name, order number, **My due date**, optional **Event date** (admin only; the Customers list shows it with the days left), **Karigar due date**, and assigned master.
 2. Tick which items this order needs (Sherwani, Kurta, Pants, Pagri, Shoes, Shawl, Vest...). Unticked items are skipped, and the same item can be added twice.
 3. For each ticked item, the app shows that item's **pre-built template form** (design number, fabric, colour, embroidery notes, measurements, reference picture...).
 4. On save, if any item field is empty the app lists what is missing, for example "You haven't given sleeve length", and saves nothing until it is filled.
@@ -215,3 +215,18 @@ The Masters page shows each master as a card: name and status, progress (items, 
 
 ## Pending shipment (17 Nov 2026)
 - In the cart an item is shown once: in "Your shipment". "Pending shipment" only lists items the karigar took out with the cross (a red card with a green tick to put it back); it is hidden when nothing is out.
+
+## Live board: dates, links, sorting (22 Nov 2026)
+- Each pending order on the Live board shows My due, Karigar due and Event (with days left). Tapping an order, in the stage columns or in the Pending list, opens that customer.
+- The Pending list has Sort by Karigar due / My due / Event date buttons (orders with no event date go last by event) and a "Show all" link instead of "+N more". The board is for the office only: it shows My due date and Event date, so keep it off any screen a master can see.
+- The customer form and the Customers list also have the optional Event date (see A2 and rule 2).
+- The chosen date is tinted in every row; pressing the chosen Sort button again turns the order round (earliest first or latest first, arrow on the button). A line under the heading says what it is sorted by, and tells when every order has the same date.
+- An **All (N)** button next to the Sort buttons shows every pending order, and pressing it again goes back to the first 14.
+
+## Order video (23 Nov 2026)
+- The customer form has an **Order video** box under the Order PDF box: choose one or more videos (MP4, MOV or WebM, 50 MB each); they are saved with the customer. The customer page lists them with Watch and a cross (asks first).
+- The master sees a **Video** block on his order page with a player; the video downloads only when he taps play. He cannot add or remove videos. The video is not part of the printed sheet or the PDF.
+- The Order PDF and Order video boxes sit side by side on a wide screen and one under the other on a phone.
+
+## Undo a step (23 Nov 2026)
+- On the master order page a finished step is folded; opening the **last step he finished** shows "Pressed Mark complete by mistake? Undo this step". The step opens again and the next one locks again. It cannot be undone once the item was sent, or if a later step is finished, or if the office finished it. The office has "Finished by mistake? Reopen this step" on the last finished step of an item. The history shows "reopened".

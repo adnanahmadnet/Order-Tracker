@@ -155,6 +155,20 @@
       "when": 1794938036137,
       "tag": "0021_note_fields_writable",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "6",
+      "when": 1795444328311,
+      "tag": "0022_confused_madame_web",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "6",
+      "when": 1795445841054,
+      "tag": "0023_tired_adam_warlock",
+      "breakpoints": true
     }
   ]
 }

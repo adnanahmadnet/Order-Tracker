@@ -4,7 +4,7 @@ These are the rules that come directly from the stakeholder (Anas) and are easy 
 
 ## Orders and fields
 1. Only these are built in on an order: order number (auto), customer name, **My due date**, and **Karigar due date**. Anas called the two due dates "the only thing hard-coded". Everything else comes from templates.
-2. **My due date is visible to Admin only.** The master only sees the Karigar due date.
+2. **My due date is visible to Admin only.** The master only sees the Karigar due date. The same holds for the optional **Event date** (the customer's event, added 21 Nov 2026, client request: "so I know how much time I have to deliver"): the office types it and sees the days left on the Customers list; it never reaches a master screen, API, printout/PDF or WhatsApp message, and changing it does not mark the order Updated.
 3. Customer name is **not unique** (many customers share a name). Never use it as an identifier; use the order number.
 4. The primary identifiers Anas cares about are **order number and due date**, not product.
 5. The app is for **custom orders only**.
@@ -131,3 +131,7 @@ These are the rules that come directly from the stakeholder (Anas) and are easy 
 83. On the master's screens a step is shown with a picture AND its name, the name small (scissors for cutting, a spool of thread and needle for stitching, a sewing machine for embroidery...), so a master who cannot read well knows it by sight; the home page tiles have a picture with a small name too. The picture is chosen from words in the step name; a step with no known word has no picture. (The client asked for the text to stay; a version with pictures only was undone.)
 
 84. A master can always look back at what he has sent: his History page lists every sent shipment (newest first) with its items and its bill and packed-items pictures, with no time limit, also after the orders are completed or archived. He sees only his own. (Client requirement, 17 Nov 2026: he sometimes needs to refer to his bills.)
+
+85. The office can attach videos (MP4, MOV or WebM, 50 MB each) to a customer. The master can watch them on his own sent orders and can never add or remove one. A video is not an order PDF (it does not let empty "Warn if empty" fields pass) and is never printed. Adding one marks the order Updated for the master. (Client requirement, 23 Nov 2026.)
+
+86. A step finished by mistake can be taken back: by the master (only the last step he finished himself, never one the office finished) or by the office (the last finished step). The step opens again and the next one locks again; images and notes stay; the history keeps both lines ("finished", then "reopened"). It is not allowed once the item has been sent in a shipment (the office remakes it instead), when a later step is already finished, or on a closed order. An item that is no longer ready leaves the master cart. (Client request, 23 Nov 2026.)

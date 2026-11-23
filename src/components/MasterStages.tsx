@@ -1,6 +1,6 @@
 import { itemStageViews, referencePhotos } from "@/lib/stages";
 import type { FieldDef } from "@/db/schema";
-import { addNoteAction, completeStageAction } from "@/app/m/actions";
+import { addNoteAction, completeStageAction, undoStageAction } from "@/app/m/actions";
 import { stageInstructions, stageNotes } from "@/lib/history";
 import { StepNotesList } from "./HistoryList";
 import { PhotoUpload } from "./PhotoUpload";
@@ -204,6 +204,20 @@ export function MasterStages({
                   )}
 
                   {(notes.get(s.key)?.length ?? 0) > 0 && <StepNotesList notes={notes.get(s.key)!} />}
+
+                  {/* a step finished by mistake: only the last one he finished, and he has to open the step first (no accidental taps) */}
+                  {s.status === "done" && s.lastDone && s.completedBy === "master" && turn && (
+                    <form action={undoStageAction} className="space-y-1.5 rounded-xl border border-rule bg-white/80 px-3 py-2">
+                      <input type="hidden" name="token" value={token} />
+                      <input type="hidden" name="orderId" value={orderId} />
+                      <input type="hidden" name="itemId" value={itemId} />
+                      <input type="hidden" name="stageKey" value={s.key} />
+                      <p className="text-base">Pressed Mark complete by mistake?</p>
+                      <button className="btn btn-quiet step-btn gap-1.5">
+                        <Icon name="remake" className="h-5 w-5" /> Undo this step
+                      </button>
+                    </form>
+                  )}
 
                   {turn && s.status !== "locked" && (
                     <details className="group/note">
