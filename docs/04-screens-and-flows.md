@@ -230,3 +230,4 @@ The Masters page shows each master as a card: name and status, progress (items, 
 
 ## Undo a step (23 Nov 2026)
 - On the master order page a finished step is folded; opening the **last step he finished** shows "Pressed Mark complete by mistake? Undo this step". The step opens again and the next one locks again. It cannot be undone once the item was sent, or if a later step is finished, or if the office finished it. The office has "Finished by mistake? Reopen this step" on the last finished step of an item. The history shows "reopened".
+- **All (N)** shows every order and clears the sort: no Sort button is lit and no date is tinted. Pressing a Sort button after it sorts all orders; pressing All again returns to the usual list.

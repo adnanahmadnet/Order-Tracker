@@ -69,9 +69,12 @@ function tag(r: Row) {
 export default async function Live({ searchParams }: { searchParams: Promise<{ sort?: string; dir?: string; all?: string }> }) {
   if (!(await isAdmin())) redirect("/admin/login?next=/live");
   const q = await searchParams;
-  const sort: SortKey = SORTS.some((s) => s.key === q.sort) ? (q.sort as SortKey) : "karigar";
+  const chosenSort = SORTS.some((s) => s.key === q.sort);
+  const sort: SortKey = chosenSort ? (q.sort as SortKey) : "karigar";
   const dir: "asc" | "desc" = q.dir === "desc" ? "desc" : "asc";
   const showAll = q.all === "1";
+  // "All" on its own: every order, in the usual order (nearest Karigar deadline), and no sort button or date is highlighted
+  const allOnly = showAll && !chosenSort;
 
   const rows = listAdminOrders({ view: "active" });
   const overdue = rows.filter(late);
@@ -88,7 +91,7 @@ export default async function Live({ searchParams }: { searchParams: Promise<{ s
   const byDeadline = [...rows].sort(compareBy(sort, dir));
   const shown = showAll ? byDeadline : byDeadline.slice(0, LIST_LIMIT);
   const listHref = (s: SortKey, d: "asc" | "desc", all: boolean) => `/live?sort=${s}${d === "desc" ? "&dir=desc" : ""}${all ? "&all=1" : ""}`;
-  const allShown = showAll || byDeadline.length <= LIST_LIMIT; // the "All" button is lit when every order is on the list
+  const sorted = !allOnly; // a sort (the chosen one, or the default Karigar due) is in use: its button and its date are highlighted
   const sortLabel = SORTS.find((s) => s.key === sort)!.label;
   const sameDates = new Set(rows.map((r) => sortDate(r, sort))).size <= 1; // every order has the same date, so the order cannot change
 
@@ -162,7 +165,7 @@ export default async function Live({ searchParams }: { searchParams: Promise<{ s
             <nav aria-label="Sort the pending orders" className="flex flex-wrap items-center gap-2 text-base sm:text-lg">
               <span className="text-muted">Sort by</span>
               {SORTS.map((s) => {
-                const on = sort === s.key;
+                const on = sorted && sort === s.key;
                 return (
                   <Link
                     key={s.key}
@@ -177,17 +180,23 @@ export default async function Live({ searchParams }: { searchParams: Promise<{ s
               })}
               <span aria-hidden className="mx-1 hidden h-6 w-px bg-rule-2 sm:block" />
               <Link
-                href={listHref(sort, dir, !showAll)}
-                aria-current={allShown ? "true" : undefined}
-                className={`rounded-full border px-4 py-1.5 font-medium transition-colors ${allShown ? "border-ink bg-ink text-white" : "border-rule-2 bg-paper-2 hover:bg-paper-3"}`}
+                href={allOnly ? "/live" : "/live?all=1"} // All shows every order and clears the sort; pressed again it goes back to the usual list
+                aria-current={showAll ? "true" : undefined}
+                className={`rounded-full border px-4 py-1.5 font-medium transition-colors ${showAll ? "border-ink bg-ink text-white" : "border-rule-2 bg-paper-2 hover:bg-paper-3"}`}
               >
                 All ({rows.length})
               </Link>
             </nav>
           </div>
           <p className="text-base text-muted sm:text-lg" role="status">
-            Sorted by <b className="font-medium text-ink">{sortLabel}</b>, {dir === "asc" ? "earliest first" : "latest first"}. Orders with no date go last. Press the same button again to turn it round.
-            {sameDates && rows.length > 1 && <span className="font-medium text-ink"> All orders have the same {sortLabel.toLowerCase()} date, so the order cannot change.</span>}
+            {allOnly ? (
+              <>Showing all {rows.length} orders, the nearest Karigar due date first. Pick a Sort button to order them another way.</>
+            ) : (
+              <>
+                Sorted by <b className="font-medium text-ink">{sortLabel}</b>, {dir === "asc" ? "earliest first" : "latest first"}. Orders with no date go last. Press the same button again to turn it round.
+                {sameDates && rows.length > 1 && <span className="font-medium text-ink"> All orders have the same {sortLabel.toLowerCase()} date, so the order cannot change.</span>}
+              </>
+            )}
           </p>
           <ul className="space-y-2">
             {shown.map((r) => {
@@ -211,15 +220,15 @@ export default async function Live({ searchParams }: { searchParams: Promise<{ s
                     <span className="block text-base text-muted">Master</span>
                     {r.masterName}
                   </p>
-                  <p className={`text-lg sm:text-xl ${sort === "my" ? SORTED_CELL : ""}`}>
+                  <p className={`text-lg sm:text-xl ${sorted && sort === "my" ? SORTED_CELL : ""}`}>
                     <span className="block text-base text-muted">My due</span>
                     {fmtDay(r.myDueDate)}
                   </p>
-                  <p className={`text-lg sm:text-xl ${sort === "karigar" ? SORTED_CELL : ""}`}>
+                  <p className={`text-lg sm:text-xl ${sorted && sort === "karigar" ? SORTED_CELL : ""}`}>
                     <span className="block text-base text-muted">Karigar due</span>
                     {fmtDay(r.karigarDueDate)}
                   </p>
-                  <p className={`text-lg sm:text-xl ${sort === "event" ? SORTED_CELL : ""}`}>
+                  <p className={`text-lg sm:text-xl ${sorted && sort === "event" ? SORTED_CELL : ""}`}>
                     <span className="block text-base text-muted">Event</span>
                     {r.eventDate ? (
                       <>
@@ -243,7 +252,7 @@ export default async function Live({ searchParams }: { searchParams: Promise<{ s
             })}
             {byDeadline.length > LIST_LIMIT && (
               <li className="px-2 text-lg">
-                <Link href={listHref(sort, dir, !showAll)} className="font-medium underline underline-offset-4">
+                <Link href={allOnly ? "/live" : listHref(sort, dir, !showAll)} className="font-medium underline underline-offset-4">
                   {showAll ? "Show fewer" : `Show all ${byDeadline.length} (+${byDeadline.length - LIST_LIMIT} more)`}
                 </Link>
               </li>
