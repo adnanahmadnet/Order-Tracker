@@ -91,9 +91,7 @@ export default async function MasterHome({
                     #{o.orderNumber} - <bdi translate="no">{o.customerName}</bdi>
                   </p>
                   {o.designNumber && <p className="text-base font-medium text-accent-deep">Design: <bdi translate="no">{o.designNumber}</bdi></p>}
-                  <p className="text-base text-muted">
-                    {o.itemLabels.length > 0 ? o.itemLabels.join(", ") : "No items yet"}
-                  </p>
+                  {o.itemLabels.length === 0 && <p className="text-base text-muted">No items yet</p>}
                   {left(o.id) && <p className="text-base font-medium text-[#92400E]">{left(o.id)}</p>}
                 </Link>
                 <div className="flex shrink-0 flex-col items-end gap-1">
@@ -102,10 +100,20 @@ export default async function MasterHome({
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-2 text-base">
-                <span className="rounded-full bg-paper-3 px-3 py-1 font-medium">Due {fmtDay(o.karigarDueDate)}</span>
+              {o.itemLabels.length > 0 && (
+                <ul className="flex flex-wrap gap-2 text-base">
+                  {o.itemLabels.map((label, k) => (
+                    <li key={k} className="rounded-xl bg-paper-3 px-3 py-1.5 font-medium text-ink-2">{label}</li>
+                  ))}
+                </ul>
+              )}
+              <div className="flex items-center justify-between gap-2 rounded-xl border border-rule-2 bg-paper-2 px-3 py-2.5 text-base">
+                <span className="flex items-center gap-2">
+                  <Icon name="calendar" className={`h-5 w-5 ${late ? "text-thread" : "text-muted"}`} />
+                  <span>Due <b className="font-semibold">{fmtDay(o.karigarDueDate)}</b></span>
+                </span>
                 {o.progress.total > 0 && (
-                  <span className="rounded-full bg-paper-3 px-3 py-1">
+                  <span className="rounded-lg bg-accent-soft px-3 py-1 text-sm font-medium text-accent-deep">
                     {`Steps ${o.progress.done} of ${o.progress.total}`}
                   </span>
                 )}

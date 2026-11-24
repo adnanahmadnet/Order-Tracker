@@ -42,6 +42,7 @@ const PATHS: Record<string, string> = {
   info: "M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM12 11v5M12 8h.01",
   arrow: "M5 12h14M13 6l6 6-6 6",
   clock: "M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM12 7.5V12l3 2",
+  calendar: "M4.5 6.5h15v13h-15zM4.5 10.5h15M8.5 4v4M15.5 4v4",
   download: "M12 4v11M7.5 11 12 15.5 16.5 11M5 19.5h14",
   lock: "M6 11h12v9H6zM8.5 11V8a3.5 3.5 0 0 1 7 0v3",
   copy: "M9 9h10v11H9zM5 15V4h10",

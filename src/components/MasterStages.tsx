@@ -95,12 +95,12 @@ export function MasterStages({
               // "Mark complete" sits at the end of the step's own row, next to its name
               const canComplete = s.status === "open" && turn && confirmed && s.photoOk && s.fieldsOk;
               const complete = canComplete ? (
-                <form action={completeStageAction} className="ms-auto shrink-0 max-[420px]:w-full">
+                <form action={completeStageAction} className="w-full">
                   <input type="hidden" name="token" value={token} />
                   <input type="hidden" name="orderId" value={orderId} />
                   <input type="hidden" name="itemId" value={itemId} />
                   <input type="hidden" name="stageKey" value={s.key} />
-                  <button className={`${btnPrimary} step-btn gap-1.5`}>
+                  <button className={`${btnPrimary} w-full gap-2`}>
                     <Icon name="check" className="h-5 w-5" /> Mark complete
                   </button>
                 </form>
@@ -111,14 +111,13 @@ export function MasterStages({
                     <span className={`min-w-[6.5rem] flex-1 ${stepIconName(s.label) ? "text-base text-ink-2" : ""}`}>
                       {s.status === "done" ? <Icon name="check" className="me-1 inline h-5 w-5" /> : s.status === "locked" ? <Icon name="lock" className="me-1 inline h-5 w-5" /> : null}
                       {n + 1}. {s.label}
+                      {/* only the number of days, never a date */}
+                      {s.days && s.status !== "done" && <span className="block text-base font-normal text-muted">{`Should take ${s.days} day${s.days === 1 ? "" : "s"}.`}</span>}
                     </span>
                 </>
               );
               const body = (
                 <>
-                  {/* only the number of days, never a date */}
-                  {s.days && s.status !== "done" && <p className="text-base text-muted">{`Should take ${s.days} day${s.days === 1 ? "" : "s"}.`}</p>}
-
                   {instructions.get(s.key) && (
                     <div className="rounded-xl border border-accent/30 bg-white/80 px-3 py-2">
                       <p className="text-sm font-medium text-accent-deep">From the office</p>
@@ -127,7 +126,7 @@ export function MasterStages({
                   )}
 
                   {s.status === "open" && s.photo === "optional" && (
-                    <div className="space-y-2">
+                    <div className="space-y-2 border-t border-rule pt-3">
                       <p className="text-lg">You can add images so the office can see your work (optional)</p>
                       {s.allPhotos.length > 0 && <StepImages photos={s.allPhotos} img={img} />}
                       <PhotoUpload
@@ -135,6 +134,7 @@ export function MasterStages({
                         fields={{ itemId: String(itemId), stageKey: s.key }}
                         label={s.allPhotos.length > 0 ? "Add more images" : "Add image"}
                         multiple
+                        quiet
                       />
                     </div>
                   )}
@@ -222,10 +222,8 @@ export function MasterStages({
                   {turn && s.status !== "locked" && (
                     <details className="group/note">
                       {/* a note is optional: the master taps the plus when he wants to write one */}
-                      <summary className="inline-flex min-h-10 cursor-pointer list-none items-center gap-2 text-base font-medium text-ink-2 [&::-webkit-details-marker]:hidden">
-                        <span className="grid h-9 w-9 place-items-center rounded-full border-[1.5px] border-ink text-ink">
-                          <Icon name="plus" className="h-5 w-5 transition-transform group-open/note:rotate-45" />
-                        </span>
+                      <summary className="flex min-h-12 w-full cursor-pointer list-none items-center justify-center gap-2 rounded-xl border border-rule-2 bg-white/80 text-base font-medium text-ink-2 hover:bg-paper-3 [&::-webkit-details-marker]:hidden">
+                        <Icon name="plus" className="h-5 w-5 transition-transform group-open/note:rotate-45" />
                         Add note
                       </summary>
                       <form action={addNoteAction} className="space-y-1.5 pt-2">
