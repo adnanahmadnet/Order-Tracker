@@ -3,7 +3,7 @@ import { db } from "@/db";
 import { itemStages, masters, orderItems, orders, photos, shipmentItems, shipments, stageEvents, type OrderStatus } from "@/db/schema";
 import { cleanValues, fieldProgress, isTextEditable, withAutoValues, type ItemValues, type NewItem } from "./items";
 import { createStageRows, orderProgress, referencePhotos } from "./stages";
-import { orderStage, orderTrack } from "./track";
+import { cardTrack, orderStage } from "./track";
 import { assignedMasterIds, assignedTo, cleanMasterIds, masterNames, mine, setAssignedMasters } from "./assign";
 import { lastActivityAt, orderFlags } from "./reminders";
 import { colourBand, type Band } from "./colour";
@@ -314,7 +314,7 @@ export function masterDashboard(masterId: number, now = new Date()) {
       progress: orderProgress(r.id),
       flags: orderFlags(r.karigarDueDate, lastActivityAt(r.id), now),
       ...cardInfo(r.id),
-      track: orderTrack(r.id),
+      track: cardTrack(r.id),
     }));
   const cutoff = closedCutoff(now).getTime();
   const closed = rows

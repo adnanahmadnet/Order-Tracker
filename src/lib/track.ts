@@ -62,6 +62,23 @@ export function orderTrack(orderId: number): TrackStep[] {
 }
 
 /**
+ * The ONE bar on the master's home card. When the items share the same steps (Sherwani + Sherwani) it is the merged bar;
+ * when their steps differ (Sherwani + Shoes) it is the bar of the FIRST item only, so the steps of the other items are
+ * never mixed in between.
+ */
+export function cardTrack(orderId: number): TrackStep[] {
+  const items = db
+    .select({ id: orderItems.id })
+    .from(orderItems)
+    .where(eq(orderItems.orderId, orderId))
+    .orderBy(orderItems.position)
+    .all();
+  const names = items.map((i) => itemStageViews(i.id).map((s) => s.label.trim().toLowerCase()).join("|"));
+  if (items.length <= 1 || names.every((n) => n === names[0])) return orderTrack(orderId);
+  return itemTrack(items[0].id);
+}
+
+/**
  * Where an order is now, in one short phrase, for the Customers filter chips: the step it is at ("Embroidery"),
  * "Ready to ship" when every step is done, or "No steps set up" when its items have no steps. null when it is all done.
  */

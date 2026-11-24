@@ -51,6 +51,28 @@ function order() {
   return { master, orderId, itemId: o.listItems(orderId)[0].id, who: { by: "master", masterId: master } as const };
 }
 
+describe("the home card's progress bars", () => {
+  it("one bar: merged when the items share their steps, else the first item's steps only", () => {
+    const a = sherwani();
+    const main = t.createMainCategory("S" + ++seq, "#000000");
+    t.createSubCategory(main, "Shoes", "#111111");
+    const shoesId = t.listCategoryTree().find((c) => c.id === main)!.subs[0].template.id;
+    t.saveTemplate(shoesId, [], t.rowsToStages([{ key: "", label: "Given To Kozi", photo: "none" }, { key: "", label: "Received", photo: "none" }]));
+    const master = m.createMaster({ name: "Naseem" + ++seq, pin: "1" });
+    const base = { customerName: "Zara", myDueDate: "2099-01-01", karigarDueDate: "2099-01-01", masterId: master, details: "" };
+    const sher = (label: string) => ({ templateId: a.tplId, label, snapshot: a.snapshot, values: {} });
+    const shoes = { templateId: shoesId, label: "Shoes", snapshot: t.templateForItem(shoesId)!.snapshot, values: {} };
+
+    const labels = (id: number) => tr.cardTrack(id).map((x) => x.label);
+    const sherLabels = ["Order received", "Cutting", "Embroidery", "Stitching", "Quality Check", "Shipped"];
+
+    expect(labels(o.createOrder(base, [sher("Sherwani"), sher("Sherwani")]))).toEqual(sherLabels);
+    // different steps: only the first item's bar, nothing of the Shoes mixed in (whichever way round they are)
+    expect(labels(o.createOrder(base, [sher("Sherwani"), shoes]))).toEqual(sherLabels);
+    expect(labels(o.createOrder(base, [shoes, sher("Sherwani")]))).toEqual(["Order received", "Given To Kozi", "Received", "Shipped"]);
+  });
+});
+
 describe("order received: the master confirms he has seen the order", () => {
   it("cannot finish a step before confirming; the office can; confirming is remembered once", () => {
     const { master, orderId, itemId, who } = order();
