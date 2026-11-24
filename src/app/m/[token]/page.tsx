@@ -72,7 +72,7 @@ export default async function MasterHome({
           </Link>
         )}
         <Link href={`/m/${token}/history`} className="relative flex min-h-28 flex-col items-center justify-center gap-1 rounded-2xl border border-rule-2 bg-paper-2 p-3 text-center text-muted hover:bg-paper-3">
-          <Icon name="receipt" className="h-12 w-12 text-accent-deep" />
+          <Icon name="history" className="h-12 w-12 text-accent-deep" />
           <span className="text-sm font-medium leading-tight text-ink-2">History</span>
         </Link>
       </div>

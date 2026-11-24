@@ -44,7 +44,7 @@ export default async function MasterHistory({ params, searchParams }: { params: 
       <Link href={`/m/${token}`} className="link inline-flex min-h-12 items-center gap-2 text-lg font-medium">
         <Icon name="arrow" className="h-4 w-4 rotate-180 rtl:rotate-0" /> Back
       </Link>
-      <PageTitle icon="receipt" large>History</PageTitle>
+      <PageTitle icon="history" large>History</PageTitle>
       {sent.length === 0 ? (
         <p className="text-xl">No sent orders yet.</p>
       ) : (
